@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth" style="scroll-padding-top: 110px;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Academia Nico Sport — Plataforma oficial. Historia, categorías, cuerpo técnico, torneos y vitrina de campeonatos. Fundada en 2008.">
+<meta name="theme-color" content="#000000">
+<title>Academia Nico Sport - Plataforma Oficial</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+colors: {
+nico: {
+orange: '#FF5500', orangeDark: '#D04400', red: '#DC2626',
+green: '#10B981', greenDark: '#059669', blue: '#0B4F9C',
+blueDark: '#052a55', gold: '#F59E0B', dark: '#000000',
+card: '#080808', cardHover: '#121212'
+}
+}
+}
+}
+}
+</script>
+<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="./js/db.js" defer></script>
+<script src="./js/app.js" defer></script>
+<script src="./js/particles.js" defer></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+/* SCROLL INTERNO PARA CONTENEDORES ESPECÍFICOS */
+.scroll-container { max-height: 520px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #FF5500 #000; }
+.scroll-container::-webkit-scrollbar { width: 8px; }
+.scroll-container::-webkit-scrollbar-track { background: #000; border-radius: 8px; }
+.scroll-container::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#FF5500,#D04400); border-radius: 8px; }
+.scroll-container::-webkit-scrollbar-thumb:hover { background: #FF5500; }
+.scroll-container-sm { max-height: 340px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #FF5500 #000; }
+.scroll-container-sm::-webkit-scrollbar { width: 6px; }
+.scroll-container-sm::-webkit-scrollbar-track { background: #000; border-radius: 6px; }
+.scroll-container-sm::-webkit-scrollbar-thumb { background: #FF5500; border-radius: 6px; }
+.scroll-x-container { max-height: 420px; overflow: auto; scrollbar-width: thin; scrollbar-color: #F59E0B #000; }
+.scroll-x-container::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-x-container::-webkit-scrollbar-track { background: #000; }
+.scroll-x-container::-webkit-scrollbar-thumb { background: #F59E0B; border-radius: 8px; }
+
+/* ESTADOS DE PAGO */
+.badge-vigente { background: rgba(16,185,129,0.15); color: #10B981; border: 1px solid rgba(16,185,129,0.4); }
+.badge-vencido { background: rgba(220,38,38,0.15); color: #DC2626; border: 1px solid rgba(220,38,38,0.4); animation: pulse 2s infinite; }
+.badge-pendiente { background: rgba(245,158,11,0.15); color: #F59E0B; border: 1px solid rgba(245,158,11,0.4); }
+.badge-validado { background: rgba(16,185,129,0.2); color: #10B981; border: 1px solid rgba(16,185,129,0.5); }
+.badge-rechazado { background: rgba(220,38,38,0.2); color: #DC2626; border: 1px solid rgba(220,38,38,0.5); }
+.timer-box { background: linear-gradient(135deg, rgba(255,85,0,0.1), rgba(220,38,38,0.05)); border: 1px solid rgba(255,85,0,0.3); }
+
+/* ESTILOS PROFESIONALES NUEVOS PARA ADMIN Y PAGOS */
+.admin-card-glow { box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); }
+.modern-table th { background: rgba(0,0,0,0.8); border-bottom: 2px solid rgba(255,255,255,0.1); color: #a1a1aa; }
+.modern-table td { padding-top: 0.8rem; padding-bottom: 0.8rem; }
+.modern-table tr:not(:last-child) td { border-bottom: 1px solid rgba(255,255,255,0.03); }
+.modern-table tr:hover { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent); }
+input[type="radio"].accent-nico-orange { accent-color: #FF5500; width: 14px; height: 14px; }
+
+/* FIX RESPONSIVE GLOBAL + MODALES + BANNERS */
+img { max-width: 100%; }
+.fixed.inset-0 .glass-box { max-height: 92vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #FF5500 #000; }
+.fixed.inset-0 .glass-box::-webkit-scrollbar { width: 6px; }
+.fixed.inset-0 .glass-box::-webkit-scrollbar-track { background: #000; border-radius: 6px; }
+.fixed.inset-0 .glass-box::-webkit-scrollbar-thumb { background: #FF5500; border-radius: 6px; }
+@media (max-width: 640px) {
+button.w-7.h-7 { width: 2.4rem !important; height: 2.4rem !important; }
+.fixed.inset-0 .flex.items-center.justify-between { flex-wrap: wrap; gap: 6px; }
+}
+</style>
+</head>
+<body class="bg-black text-gray-100 font-sans overflow-x-hidden min-h-screen selection:bg-nico-orange selection:text-white cinematic-pattern" x-data="nicoApp">
+<canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+<div x-show="modoEdicion" class="edit-hint">✏️ Modo edición activo — <span x-text="esAdmin ? 'clic en textos naranjas para reescribir · botones ✎/🗑 en jugadores, equipos y staff' : 'DT: edita ⚽ 🎯 🏅 de tu categoría'"></span></div>
+
+<!-- INTRO -->
+<div x-show="loading"
+x-transition:leave="intro-disintegrate"
+x-transition:leave-start="opacity-100 scale-100 blur-0"
+x-transition:leave-end="opacity-0 scale-150 blur-2xl pointer-events-none"
+class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(220,38,38,0.25)_0%,rgba(0,0,0,1)_70%)]"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,85,0,0.3)_0%,transparent_50%)]"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(11,79,156,0.25)_0%,transparent_50%)]"></div>
+<div class="intro-aura absolute w-96 h-96 bg-gradient-to-r from-nico-orange via-nico-red to-nico-blue rounded-full blur-[90px] opacity-40"></div>
+<div class="relative z-10 flex flex-col items-center justify-center space-y-3">
+<div class="anim-logo-entry w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-black/60 border-2 border-white/80 p-3 shadow-[0_0_50px_rgba(255,85,0,0.8)] overflow-hidden flex items-center justify-center mb-2">
+<img src="img/escudo.png" alt="Escudo Nico Sport" class="w-full h-full object-contain filter drop-shadow">
+</div>
+<h1 class="anim-disney text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 uppercase tracking-tight leading-none text-center drop-shadow-2xl">Nico Sport</h1>
+<span class="anim-disney text-nico-orange font-extrabold text-xs sm:text-sm uppercase tracking-[0.5em] block">Academia de Fútbol</span>
+<div class="anim-bounce mt-4 relative flex flex-col items-center">
+<div class="text-white text-5xl sm:text-6xl flex items-center justify-center drop-shadow-[0_0_20px_rgba(255,255,255,0.9)]">
+<i class="fas fa-futbol animate-spin" style="animation-duration: 4s;"></i>
+</div>
+<div class="w-12 h-2 bg-black/80 blur-[4px] rounded-full mt-2"></div>
+</div>
+</div>
+<div class="absolute bottom-10 flex flex-col items-center z-10">
+<span class="text-xs font-mono font-bold text-white tracking-widest drop-shadow" x-text="'CARGANDO ' + progress + '%'"></span>
+<div class="w-48 h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden border border-white/10">
+<div class="h-full bg-gradient-to-r from-nico-red via-nico-orange via-white to-nico-blue transition-all duration-100" :style="`width: ${progress}%`"></div>
+</div>
+</div>
+</div>
+
+<!-- HEADER -->
+<header class="sticky top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b-2 animated-border py-3 px-4 shadow-2xl transition-all">
+<div class="max-w-6xl mx-auto flex justify-between items-center">
+<div class="flex items-center gap-3 cursor-pointer" @click="switchTab('historia', $event); window.scrollTo({top: 0, behavior: 'smooth'})">
+<div class="w-10 h-10 rounded-xl bg-black border border-white/20 flex items-center justify-center shadow-lg relative group p-1 overflow-hidden">
+<img src="img/escudo.png" alt="Escudo Header" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
+</div>
+<div>
+<h1 class="font-black text-xs sm:text-sm tracking-wider text-white leading-none hover:text-nico-orange transition-colors">ACADEMIA NICO SPORT</h1>
+<span class="text-[9px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-1 mt-0.5">
+<i class="fas fa-award text-amber-400"></i> G&M Deportes S.A.
+</span>
+</div>
+</div>
+<div x-show="!currentUser">
+<button @click="loginModal = true; triggerParticles($event.clientX, $event.clientY)" class="relative overflow-hidden group bg-black border border-white/20 hover:border-nico-orange hover:scale-105 text-white font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg active:scale-95 flex items-center gap-2">
+<div class="absolute inset-0 bg-gradient-to-r from-nico-red/30 via-nico-orange/30 to-nico-blue/30 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<i class="fas fa-user-shield text-nico-orange relative z-10 group-hover:animate-bounce"></i>
+<span class="relative z-10">Portal Privado</span>
+</button>
+</div>
+<div x-show="currentUser" class="flex items-center gap-2">
+<span class="px-3 py-2 rounded-xl text-[10px] font-black uppercase border"
+:class="esAdmin ? 'border-nico-orange text-nico-orange bg-nico-orange/10' : (esEntrenador ? 'border-nico-blue text-nico-blue bg-nico-blue/10' : 'border-nico-green text-nico-green bg-nico-green/10')"
+x-text="(esAdmin ? 'ADMIN • ' : (esEntrenador ? 'DT • ' : 'FAMILIA • ')) + currentUser.nombre"></span>
+<button x-show="esAdmin || esEntrenador" @click="toggleModoEdicion()" :class="modoEdicion ? 'bg-nico-green text-black border-nico-green' : 'bg-black text-gray-300 border-white/20 hover:text-white'" class="border font-black px-3 py-2 rounded-xl text-[10px] uppercase transition-all" :title="esAdmin ? 'Modo edición de textos' : 'Modo edición DT (estadísticas)'">
+<i class="fas fa-pencil"></i>
+</button>
+<button @click="cerrarSesion()" class="bg-black border border-white/20 hover:border-nico-red text-gray-300 hover:text-white font-black px-3 py-2 rounded-xl text-[10px] uppercase transition-all">
+<i class="fas fa-right-from-bracket"></i> Salir
+</button>
+</div>
+</div>
+</header>
+<main class="relative z-10 pt-8 pb-28 md:pb-16 px-4 max-w-6xl mx-auto">
+<div class="text-center max-w-3xl mx-auto mb-6">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black border border-white/15 text-gray-300 text-xs font-black tracking-wider uppercase shadow-2xl hover:border-nico-orange transition-colors">
+<i class="fas fa-star text-nico-orange animate-pulse"></i> <span data-edit="hero-lema">DISCIPLINA • RESPETO • ESFUERZO • PASIÓN</span>
+</div>
+</div>
+
+<!-- NAVEGACIÓN CON ROLES -->
+<div x-data="{
+navTabs: [
+{ id:'historia',    icon:'fa-shield-halved',  label:'Escudo & Historia',  active:'text-nico-orange', role:'all'   },
+{ id:'categorias',  icon:'fa-users',          label:'Categorías',         active:'text-nico-green',  role:'all'   },
+{ id:'staff',       icon:'fa-user-ninja',     label:'Cuerpo Técnico',     active:'text-nico-blue',   role:'all'   },
+{ id:'torneo',      icon:'fa-list-ol',        label:'Torneo & Tabla',     active:'text-amber-400',   role:'all'   },
+{ id:'vitrina',     icon:'fa-trophy',         label:'Vitrina Campeonato', active:'text-amber-400',   role:'all'   },
+{ id:'asistencia',  icon:'fa-clipboard-list', label:'Asistencia',         active:'text-nico-green',  role:'coach' },
+{ id:'mensajes',    icon:'fa-inbox',          label:'Mensajes',           active:'text-nico-orange', role:'admin' },
+{ id:'pagosClub',   icon:'fa-money-bill-wave',label:'Pagos Club',         active:'text-nico-green',  role:'admin' },
+{ id:'pagosPlat',   icon:'fa-credit-card',    label:'Pago Plataforma',    active:'text-amber-400',   role:'admin' },
+{ id:'entrenadores',icon:'fa-user-tie',       label:'Entrenadores',       active:'text-nico-blue',   role:'admin' },
+{ id:'portal',      icon:'fa-wallet',         label:'Mi Cuenta',          active:'text-nico-green',  role:'padre' },
+{ id:'admin',       icon:'fa-user-gear',      label:'Panel Admin',        active:'text-nico-orange', role:'admin' }
+]
+}">
+<!-- DESKTOP -->
+<div class="hidden md:grid grid-cols-5 gap-2 p-2 bg-black/80 rounded-2xl border-b-2 animated-border mb-8 max-w-5xl mx-auto backdrop-blur-md shadow-2xl hover:shadow-[0_0_30px_rgba(255,85,0,0.15)] transition-shadow duration-500">
+<template x-for="t in navTabs" :key="'desk-'+t.id">
+<button x-show="tabVisible(t)"
+@click="switchTab(t.id, $event)"
+:class="[mainTab === t.id ? 'bg-white/15 text-white font-extrabold shadow-inner scale-[1.02]' : 'text-gray-400 hover:text-white hover:bg-white/5', t.id === 'admin' ? 'col-span-2 sm:col-span-1' : '']"
+class="py-3 px-2 rounded-xl text-sm transition-all duration-200 flex flex-col items-center gap-1.5 border border-transparent">
+<i class="fas text-base transition-transform duration-300" :class="[t.icon, mainTab === t.id ? t.active + ' scale-110' : '']"></i>
+<span x-text="t.label"></span>
+</button>
+</template>
+</div>
+<!-- MÓVIL ESTILO TIKTOK -->
+<nav id="mobileNav" class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-black/95 backdrop-blur-xl border-t-2 border-nico-orange/50 shadow-[0_-8px_30px_rgba(255,85,0,0.18)]" style="padding-bottom: env(safe-area-inset-bottom);">
+<p class="text-center text-[8px] font-black uppercase tracking-[0.3em] text-gray-600 pt-1.5 select-none">⟵ Desliza para ver más secciones ⟶</p>
+<div class="nav-scroll no-scrollbar flex overflow-x-auto snap-x snap-mandatory gap-1.5 px-2 py-2 text-[10px] font-black uppercase tracking-wide">
+<template x-for="t in navTabs.filter(t => tabVisible(t))" :key="'mob-'+t.id">
+<button :data-mobtab="t.id"
+@click="switchTab(t.id, $event); window.scrollTo({top:0, behavior:'smooth'})"
+class="snap-start shrink-0 flex flex-col items-center gap-1 py-2 px-3 min-w-[74px] rounded-xl transition-all border"
+:class="mainTab === t.id ? 'text-white bg-white/10 border-white/20 shadow-inner' : 'text-gray-500 border-transparent'">
+<i class="fas text-lg" :class="[t.icon, mainTab === t.id ? t.active : '']"></i>
+<span x-text="t.label.split(' ')[0]"></span>
+<span class="h-1 w-6 rounded-full transition-all" :class="mainTab === t.id ? 'bg-nico-orange' : 'bg-transparent'"></span>
+</button>
+</template>
+<button x-show="!currentUser" @click="loginModal = true" class="snap-start shrink-0 flex flex-col items-center gap-1 py-2 px-3 min-w-[74px] rounded-xl text-gray-500 border border-transparent">
+<i class="fas fa-user-shield text-lg text-nico-orange"></i>
+<span>Portal</span>
+<span class="h-1 w-6 rounded-full bg-transparent"></span>
+</button>
+</div>
+</nav>
+</div>
+<div id="contenido-dinamico" class="min-h-[450px]">
+
+<!-- ==================== SECCIÓN 1: HISTORIA ==================== -->
+<div x-show="mainTab === 'historia'" class="space-y-8 anim-entry">
+<div class="grid md:grid-cols-12 gap-6 items-stretch">
+<div class="md:col-span-5 glass-box p-8 rounded-3xl text-center flex flex-col items-center justify-center animated-border cursor-pointer hover:scale-[1.02] transition-transform duration-300 shadow-lg relative group" @click="triggerParticles($event.clientX, $event.clientY)">
+<div class="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl bg-black border-2 border-white flex flex-col items-center justify-center shadow-[0_0_50px_rgba(255,85,0,0.6)] mb-4 relative overflow-hidden p-4">
+<div class="absolute inset-0 bg-gradient-to-tr from-nico-red/30 via-nico-orange/20 to-transparent"></div>
+<img src="img/escudo.png" alt="Simbología del Escudo" class="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-500">
+</div>
+<h4 class="text-2xl font-black text-white uppercase tracking-tight">Simbología del Escudo</h4>
+<span class="text-xs font-bold text-nico-orange uppercase tracking-widest mt-1">Identidad & Orgullo Institucional</span>
+</div>
+<div class="md:col-span-7 glass-box p-8 rounded-3xl space-y-4 border-t-4 border-t-nico-orange hover:border-white/30 transition-colors">
+<h4 class="text-lg font-black text-white uppercase border-b border-white/10 pb-3 flex items-center justify-between">
+<span>Elementos de Nuestra Insignia</span>
+<i class="fas fa-award text-nico-orange animate-pulse"></i>
+</h4>
+<div class="space-y-3 text-xs text-gray-400">
+<div class="flex items-start gap-3 p-3 glass-card rounded-xl border border-white/5 hover:border-nico-orange hover:scale-[1.01] transition-all">
+<i class="fas fa-palette text-nico-orange text-lg mt-1 shrink-0"></i>
+<div>
+<strong class="text-white block text-sm">Franjas Naranjas, Red & Black:</strong>
+<span data-edit="insignia-franjas">El naranja y rojo representan la energía y pasión en la cancha; el negro la seriedad, fuerza y disciplina.</span>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 glass-card rounded-xl border border-white/5 hover:border-nico-green hover:scale-[1.01] transition-all">
+<i class="fas fa-leaf text-nico-green text-lg mt-1 shrink-0"></i>
+<div>
+<strong class="text-white block text-sm">Hojas de Laurel:</strong>
+<span data-edit="insignia-laurel">Simbolizan el honor, la perseverancia y el triunfo alcanzado a través del juego limpio y constante.</span>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 glass-card rounded-xl border border-white/5 hover:border-nico-blue hover:scale-[1.01] transition-all">
+<i class="fas fa-futbol text-nico-blue text-lg mt-1 shrink-0"></i>
+<div>
+<strong class="text-white block text-sm">Balón 2008:</strong>
+<span data-edit="insignia-balon">Marca el punto de partida de nuestro legado y amor incondicional por la formación deportiva base.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-box p-6 sm:p-8 rounded-3xl border-l-4 border-l-nico-orange space-y-6 cursor-pointer hover:border-nico-orange hover:shadow-lg transition-all" @click="triggerParticles($event.clientX, $event.clientY)">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-nico-orange uppercase tracking-widest flex items-center gap-2">
+<i class="fas fa-sparkles"></i> Reseña Histórica Oficial
+</span>
+<h3 class="text-2xl sm:text-3xl font-black text-white uppercase mt-1">Nuestra Historia (2008 - Presente)</h3>
+</div>
+<span class="bg-black text-nico-orange text-xs font-black px-4 py-1.5 rounded-full border border-nico-orange/50 shadow-lg">18 Años de Legado</span>
+</div>
+<div class="space-y-4 text-sm sm:text-base text-gray-300 leading-relaxed">
+<p data-edit="hist-1">La <strong class="text-white">Academia Nico Sport</strong> nació formalmente en el año <strong class="text-nico-orange">2008</strong></p>
+<p data-edit="hist-2">academia_nicosport Academia Nico Sports es una institución deportiva de alto compromiso social y técnico, fundada en 2008 con la misión de transformar la vida de niños y jóvenes a través del fútbol. Recibimos a atletas en formación desde los 6 hasta los 16 años, ofreciendo un entorno seguro, profesional y motivador. <em class="text-nico-green font-semibold">"Formamos jugadores"</em>.</p>
+<p data-edit="hist-3">Nuestra Filosofía de Formación En Nico Sports, entendemos que el fútbol es mucho más que un juego; es una herramienta de vida.</p>
+<p data-edit="hist-4">En Academia Nico Sports, el éxito no solo se mide en goles, sino en el carácter y la integridad de nuestros deportistas.</p>
+<p data-edit="hist-5">Un hito clave en la consolidación del club ha sido el respaldo institucional de <strong class="text-nico-blue">G&M Deportes S.A.</strong>, patrocinador oficial que apostó por el impacto formativo del fútbol base. Esta alianza nos permite dotar a las categorías de equipamiento de primer nivel.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-white/10 text-center">
+<div class="p-4 glass-card rounded-2xl border-b-2 border-transparent hover:border-nico-orange hover:-translate-y-1 transition-all">
+<span class="text-3xl font-black text-white block" data-edit="stat-anio">2008</span>
+<span class="text-[10px] text-nico-orange font-bold uppercase" data-edit="stat-anio-label">Año de Fundación</span>
+</div>
+<div class="p-4 glass-card rounded-2xl border-b-2 border-transparent hover:border-nico-green hover:-translate-y-1 transition-all">
+<span class="text-3xl font-black text-white block" data-edit="stat-jug">+500</span>
+<span class="text-[10px] text-nico-green font-bold uppercase" data-edit="stat-jug-label">Jugadores Formados</span>
+</div>
+<div class="p-4 glass-card rounded-2xl border-b-2 border-transparent hover:border-nico-blue hover:-translate-y-1 transition-all">
+<span class="text-3xl font-black text-white block" data-edit="stat-cats">4</span>
+<span class="text-[10px] text-nico-blue font-bold uppercase" data-edit="stat-cats-label">Categorías Oficiales</span>
+</div>
+<div class="p-4 glass-card rounded-2xl border-b-2 border-transparent hover:border-amber-400 hover:-translate-y-1 transition-all">
+<span class="text-3xl font-black text-white block" data-edit="stat-copas">0</span>
+<span class="text-[10px] text-amber-400 font-bold uppercase" data-edit="stat-copas-label">Copas Ganadas</span>
+</div>
+</div>
+</div>
+<div class="glass-box p-6 sm:p-8 rounded-3xl border-t-4 border-t-nico-green space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-nico-green uppercase tracking-widest flex items-center gap-2">
+<i class="fas fa-bullhorn"></i> Comunicados de la Junta Directiva
+</span>
+<h3 class="text-2xl font-black text-white uppercase mt-1">Anuncios Oficiales del Club</h3>
+</div>
+<span class="bg-black text-nico-green text-xs font-black px-3 py-1 rounded-full border border-nico-green/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]">Temporada 2026</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-7 space-y-6" id="leftAnnCol">
+<div class="w-full rounded-2xl overflow-hidden border-2 animated-border shine-sweep glass-card shadow-2xl p-4 sm:p-6 space-y-5">
+<div class="w-full flex justify-center bg-black/40 rounded-xl p-2 border border-white/10 shadow-2xl">
+<img src="img/formulario.jpeg" alt="Comunicado Nico Sports" class="w-full h-auto max-h-[480px] rounded-lg object-contain shadow-2xl hover:scale-[1.01] transition-transform duration-300">
+</div>
+<div class="space-y-4">
+<div>
+<span class="px-3 py-1 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-bold rounded-full uppercase tracking-wider inline-block shadow-[0_0_15px_rgba(255,85,0,0.2)]">Comunicados Oficiales 2026</span>
+<h3 class="text-xl sm:text-2xl font-black text-white mt-2 uppercase tracking-wide">Academia Nico Sports</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="bg-black/60 p-3.5 rounded-xl border border-white/10 space-y-1 hover:border-orange-500/40 hover:shadow-[0_0_15px_rgba(255,85,0,0.15)] transition-all">
+<div class="flex items-center gap-2 text-orange-400 font-black text-xs uppercase tracking-wider">
+<i class="fas fa-bullseye text-sm"></i><span>Misión</span>
+</div>
+<p class="text-gray-300 text-xs leading-relaxed" data-edit="mision">Formar niños y jóvenes a través del fútbol, desarrollando sus habilidades deportivas, valores y disciplina en un ambiente estructurado y positivo.</p>
+</div>
+<div class="bg-black/60 p-3.5 rounded-xl border border-white/10 space-y-1 hover:border-orange-500/40 hover:shadow-[0_0_15px_rgba(255,85,0,0.15)] transition-all">
+<div class="flex items-center gap-2 text-orange-400 font-black text-xs uppercase tracking-wider">
+<i class="fas fa-mountain text-sm"></i><span>Visión</span>
+</div>
+<p class="text-gray-300 text-xs leading-relaxed" data-edit="vision">Ser una academia reconocida a nivel regional por la formación integral, destacando por la calidad de entrenamientos y talento deportivo.</p>
+</div>
+</div>
+<div class="space-y-2 pt-1">
+<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Pilares Fundamentales</span>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+<div class="bg-black/50 border border-white/10 p-2.5 rounded-xl text-center hover:border-orange-500 hover:bg-orange-500/10 hover:shadow-[0_0_12px_rgba(255,85,0,0.25)] transition-all group/pillar">
+<i class="fas fa-shield-alt text-orange-400 text-sm mb-1 block group-hover/pillar:scale-110 transition-transform"></i>
+<span class="text-white text-[11px] font-bold uppercase tracking-wider block">Disciplina</span>
+</div>
+<div class="bg-black/50 border border-white/10 p-2.5 rounded-xl text-center hover:border-orange-500 hover:bg-orange-500/10 hover:shadow-[0_0_12px_rgba(255,85,0,0.25)] transition-all group/pillar">
+<i class="fas fa-handshake text-orange-400 text-sm mb-1 block group-hover/pillar:scale-110 transition-transform"></i>
+<span class="text-white text-[11px] font-bold uppercase tracking-wider block">Respeto</span>
+</div>
+<div class="bg-black/50 border border-white/10 p-2.5 rounded-xl text-center hover:border-orange-500 hover:bg-orange-500/10 hover:shadow-[0_0_12px_rgba(255,85,0,0.25)] transition-all group/pillar">
+<i class="fas fa-users text-orange-400 text-sm mb-1 block group-hover/pillar:scale-110 transition-transform"></i>
+<span class="text-white text-[11px] font-bold uppercase tracking-wider block">Trabajo</span>
+</div>
+<div class="bg-black/50 border border-white/10 p-2.5 rounded-xl text-center hover:border-orange-500 hover:bg-orange-500/10 hover:shadow-[0_0_12px_rgba(255,85,0,0.25)] transition-all group/pillar">
+<i class="fas fa-fire text-orange-400 text-sm mb-1 block group-hover/pillar:scale-110 transition-transform"></i>
+<span class="text-white text-[11px] font-bold uppercase tracking-wider block">Pasión</span>
+</div>
+</div>
+</div>
+<div class="pt-2">
+<div class="relative group overflow-hidden rounded-xl p-[1px] bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 shadow-[0_0_20px_rgba(255,85,0,0.35)]">
+<div class="bg-black/90 p-3 rounded-[11px] flex items-center justify-between gap-3 relative z-10 backdrop-blur-md">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse shadow-[0_0_10px_#ff5500]"></span>
+<span class="text-white font-black text-xs sm:text-sm uppercase tracking-wider drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">¡Únete a la Familia Nico Sports!</span>
+</div>
+<span class="text-orange-400 text-xs font-black tracking-widest uppercase flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+Temporada 2026 <i class="fas fa-arrow-right text-[10px]"></i>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full rounded-2xl overflow-hidden border-2 animated-border shine-sweep glass-card shadow-2xl p-4 sm:p-6 space-y-5">
+<div class="w-full flex justify-center bg-black/40 rounded-xl p-2 border border-white/10 shadow-2xl">
+<img src="img/visoria.jpg" alt="Afiche Visorías Nico Sports" class="w-full h-auto max-h-[480px] rounded-lg object-contain shadow-2xl hover:scale-[1.01] transition-transform duration-300">
+</div>
+<div class="space-y-4">
+<div>
+<span class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold rounded-full uppercase tracking-wider inline-block shadow-[0_0_15px_rgba(245,158,11,0.3)]">Visorías & Captación 2026</span>
+<h3 class="text-xl sm:text-2xl font-black text-white mt-2 uppercase tracking-wide">Convocatoria Oficial de Talentos</h3>
+<p class="text-gray-300 text-xs sm:text-sm mt-2 leading-relaxed" data-edit="visoria-desc">Sesiones de evaluación deportiva abiertas para seleccionar a los nuevos jugadores que formarán parte de nuestros planteles competitivos.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="bg-black/60 p-3.5 rounded-xl border border-white/10 space-y-1">
+<div class="flex items-center gap-2 text-amber-400 font-black text-xs uppercase tracking-wider">
+<i class="fas fa-users"></i><span>Categorías</span>
+</div>
+<p class="text-white text-xs font-bold" data-edit="visoria-cats">Desde Sub-6 hasta Sub-14 y Mayor</p>
+</div>
+<div class="bg-black/60 p-3.5 rounded-xl border border-white/10 space-y-1">
+<div class="flex items-center gap-2 text-amber-400 font-black text-xs uppercase tracking-wider">
+<i class="fas fa-star"></i><span>Evaluación</span>
+</div>
+<p class="text-gray-300 text-xs leading-relaxed" data-edit="visoria-eval">Pruebas técnicas, perfilamiento y lectura táctica en campo.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-3" id="rightMediaCol">
+<div class="glass-box p-4 rounded-3xl border border-white/10 space-y-3 relative overflow-hidden animated-border shadow-2xl flex-[3] flex flex-col">
+<div class="absolute inset-0 bg-gradient-to-r from-nico-blue/10 via-black to-nico-orange/10 pointer-events-none"></div>
+<div class="flex items-center justify-between gap-2 border-b border-white/10 pb-2 relative z-10 shrink-0">
+<div>
+<span class="text-[10px] font-black text-nico-orange uppercase tracking-widest flex items-center gap-1.5" data-edit="media-tag"><i class="fas fa-video"></i> Multimedia</span>
+<h3 class="text-base font-black text-white uppercase mt-0.5" data-edit="media-title">Resumen Temporada</h3>
+</div>
+<span class="bg-black text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border border-white/20">HD</span>
+</div>
+<div class="relative rounded-2xl overflow-hidden bg-black border border-white/20 shadow-2xl w-full flex-1 min-h-[140px]">
+<video class="w-full h-full object-cover rounded-2xl" controls preload="metadata">
+<source src="video/resumen-temporada.mp4" type="video/mp4">
+Tu navegador no soporta la reproducción de video.
+</video>
+</div>
+</div>
+<div class="glass-box p-4 rounded-3xl border border-amber-400/40 space-y-3 relative overflow-hidden animated-border shadow-2xl group flex-[2] flex flex-col">
+<div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-black to-nico-orange/10 pointer-events-none"></div>
+<div class="flex items-center justify-between gap-2 border-b border-white/10 pb-2 relative z-10 shrink-0">
+<div>
+<span class="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-1.5" data-edit="gira-tag"><i class="fas fa-plane-departure"></i> Anuncio Futuro</span>
+<h3 class="text-base font-black text-white uppercase mt-0.5" data-edit="gira-title">Próximamente Gira</h3>
+</div>
+<span class="bg-amber-500/20 text-amber-400 text-[10px] font-black px-2.5 py-0.5 rounded-full border border-amber-500/30 animate-pulse">2026</span>
+</div>
+<div class="w-full flex-1 min-h-[90px] rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl bg-black">
+<img src="img/fooy.jpg" alt="Próximamente Gira Nico Sports" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-end p-3">
+<span class="text-[10px] font-black text-amber-400 uppercase tracking-widest drop-shadow" data-edit="gira-overlay1">Evento Especial</span>
+<span class="text-white text-xs font-black uppercase drop-shadow" data-edit="gira-overlay2">Detalles Próximamente</span>
+</div>
+</div>
+<div class="bg-black/60 p-2.5 rounded-xl border border-white/10 text-[11px] text-gray-300 relative z-10 flex items-center gap-2 shrink-0">
+<i class="fas fa-bullhorn text-amber-400 text-xs shrink-0"></i>
+<p class="leading-tight" data-edit="gira-nota">Atento a redes sociales para fechas e inscripciones.</p>
+</div>
+</div>
+<div class="glass-box p-4 rounded-3xl border border-nico-orange/40 relative overflow-hidden animated-border shadow-2xl group flex-[3] flex flex-col justify-between space-y-3">
+<div class="absolute inset-0 bg-gradient-to-br from-nico-orange/10 via-black to-nico-red/10 pointer-events-none"></div>
+<div class="flex items-center justify-between gap-2 border-b border-white/10 pb-2 relative z-10 shrink-0">
+<div>
+<span class="text-[10px] font-black text-nico-orange uppercase tracking-widest flex items-center gap-1.5" data-edit="uniforme-tag"><i class="fas fa-shirt"></i> Indumentaria 2026</span>
+<h3 class="text-base font-black text-white uppercase mt-0.5" data-edit="uniforme-title">Uniforme Oficial</h3>
+</div>
+<span class="bg-nico-orange/20 text-nico-orange text-[10px] font-black px-2.5 py-0.5 rounded-full border border-nico-orange/30">Oficial</span>
+</div>
+<div class="w-full flex-1 min-h-[140px] rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl bg-black">
+<img src="img/uniforme.png" alt="Uniforme Oficial Nico Sports" class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-end p-3">
+<span class="text-[10px] font-black text-nico-orange uppercase tracking-widest drop-shadow" data-edit="uniforme-overlay1">G&M Deportes S.A.</span>
+<span class="text-white text-xs font-black uppercase drop-shadow" data-edit="uniforme-overlay2">Equipación de Temporada</span>
+</div>
+</div>
+<div class="bg-black/60 p-2.5 rounded-xl border border-white/10 text-[11px] text-gray-300 relative z-10 flex items-center gap-2 shrink-0">
+<i class="fas fa-shield-halved text-nico-orange text-xs shrink-0"></i>
+<p class="leading-tight" data-edit="uniforme-nota">Indumentaria oficial de entreno y competencia para las categorías del club.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 2: CATEGORÍAS ==================== -->
+<div x-show="mainTab === 'categorias'" class="space-y-6 anim-entry">
+<div class="flex justify-center gap-2 flex-wrap">
+<template x-for="cat in categoriasVisibles" :key="cat.key">
+<button @click="catTab = cat.key; triggerParticles($event.clientX, $event.clientY)" :class="catTab === cat.key ? 'bg-white text-black font-extrabold shadow-[0_0_20px_rgba(255,255,255,0.4)] scale-105' : 'glass-box text-gray-400 hover:text-white'" class="px-4 py-2.5 rounded-xl text-xs transition-all border border-white/10 whitespace-nowrap" x-text="cat.tab"></button>
+</template>
+</div>
+<div class="glass-box p-6 sm:p-8 rounded-3xl border border-white/10 relative overflow-hidden">
+<template x-for="cat in categoriasVisibles" :key="'blk-'+cat.key">
+<div x-show="catTab === cat.key" class="space-y-8 relative z-10" style="display:none;">
+<div class="grid sm:grid-cols-12 gap-6 items-center">
+<div class="sm:col-span-7 space-y-4">
+<span class="text-xs font-bold bg-black px-3 py-1 rounded-full uppercase border" :class="[cat.text, cat.badgeBorder]" :data-edit="cat.key + '-badge'" x-text="cat.badge"></span>
+<h4 class="text-2xl font-black text-white" x-text="cat.titulo"></h4>
+<p class="text-xs sm:text-sm text-gray-400 leading-relaxed" :data-edit="cat.key + '-desc'" x-text="cat.desc"></p>
+<div class="text-xs space-y-2 text-gray-400 bg-black/60 p-4 rounded-2xl border border-white/10">
+<p :data-edit="cat.key + '-torneos'"><strong class="text-nico-orange">Torneos:</strong> <span x-text="cat.torneos"></span></p>
+<p :data-edit="cat.key + '-horario'"><strong class="text-nico-green">Horarios de Entreno:</strong> <span x-text="cat.horario"></span></p>
+<p :data-edit="cat.key + '-cancha'"><strong class="text-white">Cancha:</strong> <span x-text="cat.cancha"></span></p>
+</div>
+</div>
+<div class="sm:col-span-5">
+<div class="h-56 rounded-2xl border relative overflow-hidden shadow-2xl cursor-pointer group" :class="cat.boxBorder" @click="imageModal = 'Foto Oficial: ' + cat.tab; triggerParticles($event.clientX, $event.clientY)">
+<img :src="cat.foto" :alt="'Foto Oficial ' + cat.tab" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='img/escudo.png';">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-between p-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-black p-1 border border-white/40"><img src="img/escudo.png" alt="Escudo" class="w-full h-full object-contain"></div>
+<span class="text-xs font-black text-white uppercase drop-shadow" x-text="'Nico Sport ' + cat.tab"></span>
+</div>
+<div>
+<span class="text-xs font-black uppercase block drop-shadow" :class="cat.text" x-text="'Ver Foto Oficial ' + cat.tab"></span>
+<span class="text-[10px] text-gray-300 font-bold" :data-edit="cat.key + '-count'" x-text="cat.count"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-white/10 space-y-4">
+<div class="flex items-center justify-between flex-wrap gap-2">
+<h5 class="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+<i class="fas fa-id-card" :class="cat.text"></i> Plantilla Oficial <span x-text="cat.tab"></span> <span class="hidden sm:inline">(Toca para ver estadísticas)</span>
+</h5>
+<span class="text-[11px] font-bold text-gray-400" :data-edit="cat.key + '-entrenador'">Entrenador: <strong class="text-white" x-text="cat.entrenador"></strong></span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+<template x-for="player in playersDe(cat.key)" :key="player.id">
+<div @click="if (!modoEdicion) { playerModal = player; triggerParticles($event.clientX, $event.clientY); }"
+:class="`bg-gradient-to-b ${getPlayerGradient(player)} ${getSSClass(player)}`"
+class="relative p-[2px] rounded-xl hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg group">
+<div class="bg-[#0a0a0a] rounded-[10px] p-2 flex flex-col items-center relative h-full overflow-hidden">
+<div class="absolute top-2 left-2 flex flex-col items-center z-10">
+<span class="text-xs font-black text-white leading-none" x-text="'#' + player.dorsal"></span>
+<span class="text-[8px] font-bold text-amber-400 mt-0.5" x-text="player.pos"></span>
+</div>
+<div class="absolute top-2 right-2 z-10"><img src="img/escudo.png" alt="Escudo Nico Sport" class="w-3.5 h-3.5 object-contain"></div>
+<div class="w-full h-20 flex justify-center items-end mt-2 z-0">
+<img :src="player.foto || 'img/jugadores/' + player.catKey + '/' + player.dorsal + '.png'" alt="Foto Jugador" class="h-20 object-contain group-hover:scale-110 transition-transform duration-300">
+</div>
+<div class="w-full text-center mt-2 border-t border-white/10 pt-1.5 bg-[#0a0a0a] z-10">
+<span class="font-black text-[10px] text-white uppercase tracking-tighter block truncate" x-text="player.name"></span>
+<div class="flex items-center justify-center gap-1 mt-1 flex-wrap">
+<span class="player-stat-mini stat-gol">⚽<span x-text="getStats(player).goles"></span></span>
+<span class="player-stat-mini stat-asis">🎯<span x-text="getStats(player).asistencias"></span></span>
+<template x-if="getStats(player).mvp > 0"><span class="mvp-mini-badge">MVP</span></template>
+</div>
+<template x-if="notaJugador(player) !== null">
+<span class="ss-badge mt-1 inline-block" :class="getSSBadgeClass(player)" x-text="notaJugador(player).toFixed(1)"></span>
+</template>
+<template x-if="puedeEditarCategoria(cat.key) && modoEdicion">
+<div class="flex items-center justify-center gap-1 mt-1.5 flex-wrap" @click.stop>
+<button x-show="esAdmin" class="btn-edit-mini" @click="renombrarJugador(player)" title="Cambiar nombre"><i class="fas fa-pen"></i></button>
+<div class="stat-editor"><button @click="cambiarStat(player,'goles',-1)">−</button><span x-text="getStats(player).goles"></span><button @click="cambiarStat(player,'goles',1)">+</button></div>
+<div class="stat-editor"><button @click="cambiarStat(player,'asistencias',-1)">−</button><span x-text="getStats(player).asistencias"></span><button @click="cambiarStat(player,'asistencias',1)">+</button></div>
+<div class="stat-editor"><button @click="cambiarStat(player,'mvp',-1)">−</button><span x-text="getStats(player).mvp"></span><button @click="cambiarStat(player,'mvp',1)">+</button></div>
+<button x-show="esAdmin" class="btn-del-mini" @click="eliminarJugador(player)" title="Eliminar jugador"><i class="fas fa-trash"></i></button>
+</div>
+</template>
+</div>
+</div>
+</div>
+</template>
+</div>
+<p x-show="playersDe(cat.key).length === 0" class="text-center text-gray-500 italic text-xs py-6">Aún no hay jugadores en esta categoría.</p>
+</div>
+</div>
+</template>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 3: CUERPO TÉCNICO ==================== -->
+<div x-show="mainTab === 'staff'" class="space-y-6 anim-entry">
+<div class="text-center max-w-xl mx-auto space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Liderazgo & Metodología</span>
+<h3 class="text-2xl font-black text-white uppercase mt-4">Nuestro Cuerpo Técnico</h3>
+<p class="text-xs text-gray-400" data-edit="staff-intro"> dedicados a la enseñanza técnica y formación en valores.</p>
+<button x-show="esAdmin && modoEdicion" @click="agregarStaff()" class="mt-2 border-2 border-dashed border-nico-green/40 text-nico-green rounded-xl px-4 py-2 text-xs font-black uppercase hover:bg-nico-green/10 transition-all">+ Agregar Integrante</button>
+</div>
+<div class="grid sm:grid-cols-2 gap-6">
+<template x-for="staff in staffList" :key="staff.id">
+<div class="glass-box p-6 rounded-3xl border border-white/10 flex flex-col justify-between hover:border-white/30 hover:scale-[1.02] transition-all shadow-xl group cursor-pointer relative" @click="if (!modoEdicion) { staffModal = staff; triggerParticles($event.clientX, $event.clientY); }">
+<template x-if="esAdmin && modoEdicion">
+<div class="absolute top-3 right-3 z-20 flex gap-1" @click.stop>
+<button class="btn-edit-mini" @click="editarStaff(staff)" title="Editar ficha"><i class="fas fa-pen"></i></button>
+<button class="btn-del-mini" @click="eliminarStaff(staff)" title="Eliminar"><i class="fas fa-trash"></i></button>
+</div>
+</template>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br flex items-center justify-center text-2xl text-white shadow-[0_0_15px_rgba(255,255,255,0.2)] shrink-0 group-hover:scale-110 transition-transform duration-300 border border-white/20" :class="staff.color">
+<i class="fas" :class="staff.fotoIcon"></i>
+</div>
+<div>
+<h4 class="text-lg font-black text-white group-hover:text-amber-400 transition-colors" x-text="staff.nombre"></h4>
+<span class="text-xs font-bold text-gray-300 block" x-text="staff.cargo"></span>
+<span class="text-[10px] text-gray-500 font-semibold uppercase" x-text="staff.licencia"></span>
+</div>
+</div>
+<p class="text-xs text-gray-400 leading-relaxed" x-text="staff.bio"></p>
+</div>
+<div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
+<span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider" x-text="staff.exp"></span>
+<span class="text-xs font-black text-white group-hover:text-amber-400 transition-colors flex items-center gap-1">
+Ver Ficha <i class="fas fa-arrow-right text-[10px]"></i>
+</span>
+</div>
+</div>
+</template>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 4: TORNEO & TABLA ==================== -->
+<div x-show="mainTab === 'torneo'" class="space-y-6 anim-entry">
+<div class="flex justify-center items-center gap-2 flex-wrap">
+<template x-for="(cat, idx) in categoriasTorneoVisibles" :key="cat.key">
+<button @click="goToTorneo(idx)"
+:class="idx === currentTorneoIdx ? 'bg-nico-orange text-white shadow-[0_0_15px_rgba(255,85,0,0.6)] scale-105' : 'bg-black text-gray-400 hover:text-white border border-white/10'"
+class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300">
+<span x-text="cat.label"></span>
+</button>
+</template>
+</div>
+<div class="relative max-w-5xl mx-auto">
+<div class="overflow-hidden rounded-3xl">
+<div class="flex transition-transform duration-700 ease-out" :style="`transform: translateX(-${currentTorneoIdx * 100}%)`">
+<template x-for="(cat, idx) in categoriasTorneoVisibles" :key="cat.key">
+<div class="w-full flex-shrink-0">
+<div class="glass-box p-5 sm:p-8 rounded-3xl border border-white/10 space-y-5">
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-gray-400 uppercase tracking-widest">Torneo Clausura 2026</span>
+<h4 class="text-xl sm:text-2xl font-black text-white uppercase mt-0.5">Tabla de Posiciones (<span class="text-nico-orange" x-text="cat.label"></span>)</h4>
+<p class="text-[11px] text-gray-500 mt-1" x-text="cat.descripcion"></p>
+</div>
+<div class="flex items-center gap-2">
+<span :class="cat.tabla.length > 0 ? 'bg-nico-green/20 text-nico-green border-nico-green/40' : 'bg-nico-orange/20 text-nico-orange border-nico-orange/40 animate-pulse'" class="text-xs font-extrabold px-3 py-1 rounded-full border" x-text="cat.tabla.length > 0 ? 'EN CURSO' : 'PRÓXIMAMENTE'"></span>
+<button x-show="esAdmin && modoEdicion" @click="agregarEquipo(cat)" class="btn-edit-mini" title="Agregar equipo"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+<div class="scroll-x-container rounded-2xl border border-white/10">
+<div x-show="cat.tabla.length === 0" class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead><tr class="text-gray-500 border-b border-white/10 uppercase font-black text-[10px]"><th class="py-3 px-2">Pos</th><th class="py-3 px-4">Equipo</th><th class="py-3 px-2 text-center">PJ</th><th class="py-3 px-2 text-center">PG</th><th class="py-3 px-2 text-center">PE</th><th class="py-3 px-2 text-center">PP</th><th class="py-3 px-2 text-center">GF</th><th class="py-3 px-2 text-center">GC</th><th class="py-3 px-2 text-center font-bold">PTS</th></tr></thead>
+<tbody><tr><td colspan="9" class="py-10 text-center text-gray-500 italic"><i class="fas fa-calendar-xmark text-2xl text-gray-600 mb-2 block"></i>Torneo no iniciado — Datos próximamente</td></tr></tbody>
+</table>
+</div>
+<div x-show="cat.tabla.length > 0" class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead><tr class="text-gray-500 border-b border-white/10 uppercase font-black text-[10px]"><th class="py-3 px-2">Pos</th><th class="py-3 px-4">Equipo</th><th class="py-3 px-2 text-center">PJ</th><th class="py-3 px-2 text-center">PG</th><th class="py-3 px-2 text-center">PE</th><th class="py-3 px-2 text-center">PP</th><th class="py-3 px-2 text-center">GF</th><th class="py-3 px-2 text-center">GC</th><th class="py-3 px-2 text-center font-bold">PTS</th><th x-show="modoEdicion" class="py-3 px-2"></th></tr></thead>
+<tbody class="divide-y divide-white/5 font-semibold">
+<template x-for="(team, tIdx) in tablaOrdenada(cat)" :key="cat.key + '-' + tIdx">
+<tr :class="team.nombre.includes('Nico Sport') ? 'bg-nico-orange/10 text-white border-l-4 border-l-nico-orange' : 'hover:bg-white/5'" class="transition-colors">
+<td class="py-3 px-2 font-black" :class="tIdx === 0 ? 'text-amber-400' : (team.nombre.includes('Nico Sport') ? 'text-nico-orange' : 'text-gray-400')" x-text="tIdx + 1"></td>
+<td class="py-3 px-4" :class="team.nombre.includes('Nico Sport') ? 'font-black text-nico-orange' : 'text-gray-300'">
+<span class="flex items-center gap-2" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNombreEquipo(team)">
+<i class="fas" :class="team.nombre.includes('Nico Sport') ? 'fa-shield-halved text-nico-orange drop-shadow-[0_0_10px_rgba(255,85,0,0.7)]' : 'fa-shield text-white/60'"></i>
+<span x-text="team.nombre"></span>
+</span>
+</td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'pj')" x-text="team.pj"></td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'pg')" x-text="team.pg"></td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'pe')" x-text="team.pe"></td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'pp')" x-text="team.pp"></td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'gf')" x-text="team.gf"></td>
+<td class="py-3 px-2 text-center text-gray-300" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'gc')" x-text="team.gc"></td>
+<td class="py-3 px-2 text-center font-black text-white" :class="(modoEdicion && esAdmin) ? 'cursor-pointer hover:text-nico-orange' : ''" @click="editarNum(team,'pts')" x-text="team.pts"></td>
+<td x-show="modoEdicion && esAdmin" class="py-3 px-2"><button class="btn-del-mini" @click="eliminarEquipo(cat, team)" title="Eliminar equipo"><i class="fas fa-trash"></i></button></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="glass-card p-4 rounded-2xl border border-white/10 space-y-2 hover:border-nico-green transition-colors">
+<h5 class="text-xs font-black text-white uppercase border-b border-white/10 pb-2 flex items-center justify-between">
+<span>Último Resultado</span>
+<template x-if="cat.ultimoResultado">
+<span class="text-[10px] font-bold px-2 py-1 rounded" :class="cat.ultimoResultado.golesNico > cat.ultimoResultado.golesRival ? 'text-nico-green bg-nico-green/10' : (cat.ultimoResultado.golesNico === cat.ultimoResultado.golesRival ? 'text-amber-400 bg-amber-400/10' : 'text-nico-red bg-nico-red/10')" x-text="cat.ultimoResultado.golesNico > cat.ultimoResultado.golesRival ? 'Victoria' : (cat.ultimoResultado.golesNico === cat.ultimoResultado.golesRival ? 'Empate' : 'Derrota')"></span>
+</template>
+<template x-if="!cat.ultimoResultado"><span class="text-[10px] text-gray-500 font-bold bg-black/60 px-2 py-1 rounded">Sin datos</span></template>
+</h5>
+<template x-if="cat.ultimoResultado">
+<div>
+<div class="flex items-center justify-around py-3">
+<div class="text-center">
+<span class="font-black text-sm text-white block">Nico Sport</span>
+<span class="text-3xl font-black" :class="cat.ultimoResultado.golesNico > cat.ultimoResultado.golesRival ? 'text-nico-green' : 'text-gray-500'" x-text="cat.ultimoResultado.golesNico" @click="editarNum(cat.ultimoResultado,'golesNico')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span>
+</div>
+<span class="text-xs font-black text-gray-600 uppercase">VS</span>
+<div class="text-center">
+<span class="font-black text-sm text-gray-500 block" x-text="cat.ultimoResultado.rival" @click="editarTextoObj(cat.ultimoResultado,'rival','Rival:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span>
+<span class="text-3xl font-black text-gray-500" x-text="cat.ultimoResultado.golesRival" @click="editarNum(cat.ultimoResultado,'golesRival')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span>
+</div>
+</div>
+<p class="text-[11px] text-gray-500 text-center">
+<span @click="editarTextoObj(cat.ultimoResultado,'goleadores','Goleadores:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''" x-text="'Goles: ' + cat.ultimoResultado.goleadores"></span> •
+<span @click="editarTextoObj(cat.ultimoResultado,'sede','Sede:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''" x-text="cat.ultimoResultado.sede"></span>
+</p>
+</div>
+</template>
+<template x-if="!cat.ultimoResultado"><div class="text-center text-gray-500 italic py-3"><i class="fas fa-clock-rotate-left text-xl mb-1 block text-gray-600"></i>Sin partidos jugados</div></template>
+</div>
+<div class="glass-card p-4 rounded-2xl border border-white/10 space-y-2 hover:border-nico-orange transition-colors">
+<h5 class="text-xs font-black text-white uppercase border-b border-white/10 pb-2 flex items-center justify-between">
+<span>Próximo Partido</span>
+<template x-if="cat.proximoPartido"><span class="text-[10px] text-nico-orange font-bold bg-nico-orange/10 px-2 py-1 rounded" x-text="cat.proximoPartido.fecha" @click="editarTextoObj(cat.proximoPartido,'fecha','Fecha:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span></template>
+<template x-if="!cat.proximoPartido"><span class="text-[10px] text-gray-500 font-bold bg-black/60 px-2 py-1 rounded">Por definir</span></template>
+</h5>
+<template x-if="cat.proximoPartido">
+<div>
+<div class="flex items-center justify-around py-3">
+<div class="text-center">
+<span class="font-black text-sm text-white block">Nico Sport</span>
+<span class="text-xs text-gray-400 font-bold block" x-text="cat.proximoPartido.condicion" @click="editarTextoObj(cat.proximoPartido,'condicion','Condición (Local/Visita):')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span>
+</div>
+<span class="text-xs font-black text-gray-600 uppercase">VS</span>
+<div class="text-center">
+<span class="font-black text-sm text-gray-500 block" x-text="cat.proximoPartido.rival" @click="editarTextoObj(cat.proximoPartido,'rival','Rival:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></span>
+<span class="text-xs text-gray-600 font-bold block">Rival</span>
+</div>
+</div>
+<p class="text-[11px] text-gray-500 text-center" x-text="cat.proximoPartido.sede + ' • Transmisión en directo'" @click="editarTextoObj(cat.proximoPartido,'sede','Sede:')" :style="(modoEdicion && esAdmin) ? 'cursor:pointer' : ''"></p>
+</div>
+</template>
+<template x-if="!cat.proximoPartido"><div class="text-center text-gray-500 italic py-3"><i class="fas fa-calendar-days text-xl mb-1 block text-gray-600"></i>Por definir (Fecha y rival)</div></template>
+</div>
+</div>
+<div x-show="esAdmin" class="p-4 rounded-2xl border border-nico-orange/30 bg-gradient-to-r from-nico-orange/5 to-transparent space-y-3">
+<p class="text-xs text-gray-400 uppercase font-black flex items-center gap-2">
+<i class="fas fa-flag-checkered text-nico-orange"></i> Fase Actual del Torneo — <span class="text-nico-orange" x-text="cat.label"></span>
+</p>
+<div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+<template x-for="fase in fasesTorneo" :key="fase.key">
+<button @click="setFaseTorneo(fase.key)"
+:class="cat.faseActual === fase.key ? 'bg-nico-orange text-white shadow-[0_0_15px_rgba(255,85,0,0.5)] border-nico-orange' : 'bg-black/40 text-gray-400 border-white/10 hover:border-nico-orange/50 hover:text-white'"
+class="px-2 py-2.5 rounded-xl text-[10px] sm:text-xs font-black border transition-all duration-300 flex items-center justify-center gap-1.5 uppercase">
+<i :class="fase.icon" class="text-[10px]"></i>
+<span x-text="fase.label"></span>
+</button>
+</template>
+</div>
+</div>
+<div x-show="!esAdmin" class="p-4 rounded-2xl border border-white/10 bg-black/30">
+<p class="text-xs text-gray-400 uppercase font-black flex items-center gap-2">
+<i class="fas fa-flag-checkered text-gray-500"></i> Fase Actual: <span class="text-white" x-text="fasesTorneo.find(f => f.key === cat.faseActual)?.label || 'Sin torneo'"></span>
+</p>
+</div>
+<div class="p-4 rounded-2xl border border-amber-400/20 bg-gradient-to-r from-amber-400/5 to-transparent space-y-3">
+<p class="text-xs text-gray-400 uppercase font-black flex items-center gap-2">
+<i class="fas fa-trophy text-amber-400"></i> Camino al Título — <span class="text-nico-orange" x-text="cat.label"></span>
+</p>
+<div class="overflow-x-auto pb-1">
+<div class="relative min-w-[560px]">
+<div class="grid grid-cols-5">
+<div class="px-1.5">
+<p class="text-center text-[9px] font-black uppercase tracking-wider mb-2" :class="roundState(cat,0)==='current' ? 'text-nico-orange' : (roundState(cat,0)==='done' ? 'text-nico-green' : 'text-gray-500')">Octavos</p>
+<div class="flex flex-col justify-between h-44 gap-2">
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,0)" x-text="roundText(cat,0)"></div>
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,0)" x-text="roundText(cat,0)"></div>
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,0)" x-text="roundText(cat,0)"></div>
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,0)" x-text="roundText(cat,0)"></div>
+</div>
+</div>
+<div class="px-1.5">
+<p class="text-center text-[9px] font-black uppercase tracking-wider mb-2" :class="roundState(cat,1)==='current' ? 'text-nico-orange' : (roundState(cat,1)==='done' ? 'text-nico-green' : 'text-gray-500')">Cuartos</p>
+<div class="flex flex-col justify-around h-44 gap-2">
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,1)" x-text="roundText(cat,1)"></div>
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,1)" x-text="roundText(cat,1)"></div>
+</div>
+</div>
+<div class="px-1.5">
+<p class="text-center text-[9px] font-black uppercase tracking-wider mb-2" :class="roundState(cat,2)==='current' ? 'text-nico-orange' : (roundState(cat,2)==='done' ? 'text-nico-green' : 'text-gray-500')">Semis</p>
+<div class="flex flex-col justify-center h-44">
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,2)" x-text="roundText(cat,2)"></div>
+</div>
+</div>
+<div class="px-1.5">
+<p class="text-center text-[9px] font-black uppercase tracking-wider mb-2" :class="roundState(cat,3)==='current' ? 'text-nico-orange' : (roundState(cat,3)==='done' ? 'text-nico-green' : 'text-gray-500')">Final</p>
+<div class="flex flex-col justify-center h-44">
+<div class="h-9 rounded-lg border flex items-center justify-center text-[8px] font-bold uppercase" :class="roundClass(cat,3)" x-text="roundText(cat,3)"></div>
+</div>
+</div>
+<div class="px-1.5">
+<p class="text-center text-[9px] font-black uppercase tracking-wider mb-2 text-amber-400">Campeón</p>
+<div class="flex flex-col items-center justify-center h-44">
+<i class="fas fa-trophy text-3xl transition-all duration-500" :class="bracketIdx(cat) === 4 ? 'text-amber-300 animate-bounce drop-shadow-[0_0_25px_rgba(245,158,11,1)]' : (bracketIdx(cat) === 3 ? 'text-amber-300 animate-pulse drop-shadow-[0_0_15px_rgba(245,158,11,0.8)]' : 'text-amber-400/50')"></i>
+<span class="text-[8px] font-bold uppercase mt-2 transition-colors" :class="bracketIdx(cat) === 4 ? 'text-amber-300' : 'text-gray-600'" x-text="bracketIdx(cat) === 4 ? '¡NICO SPORT!' : 'Por definir'"></span>
+</div>
+</div>
+</div>
+<div class="absolute top-[55%] -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none transition-all duration-700 ease-out"
+:class="bracketIdx(cat) >= 0 ? 'opacity-100' : 'opacity-0'"
+:style="`left: ${bracketIdx(cat) >= 0 ? (bracketIdx(cat) * 20 + 10) : 50}%`">
+<div class="w-12 h-12 rounded-full bg-black border-2 border-nico-orange p-1 shadow-[0_0_25px_rgba(255,85,0,0.9)]">
+<img src="img/escudo.png" alt="Escudo Nico Sport" class="w-full h-full object-contain">
+</div>
+</div>
+</div>
+</div>
+<p class="text-[10px] text-gray-500 italic text-center">El escudo avanza por el diagrama según la fase. Si llega a Campeón, ¡se posa sobre la copa! 🏆</p>
+</div>
+</div>
+</div>
+</template>
+</div>
+</div>
+<button @click="prevTorneo()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-nico-orange/90 hover:bg-nico-orange text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,85,0,0.6)] transition-all hover:scale-110 z-10">
+<i class="fas fa-chevron-left text-lg"></i>
+</button>
+<button @click="nextTorneo()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-nico-orange/90 hover:bg-nico-orange text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,85,0,0.6)] transition-all hover:scale-110 z-10">
+<i class="fas fa-chevron-right text-lg"></i>
+</button>
+</div>
+<div class="text-center text-gray-500 text-xs font-bold">
+<span x-text="currentTorneoIdx + 1"></span> / <span x-text="categoriasTorneoVisibles.length"></span> Categorías
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 5: VITRINA ==================== -->
+<div x-show="mainTab === 'vitrina'" class="space-y-8 anim-entry">
+<div class="glass-box p-6 sm:p-8 rounded-3xl border border-amber-400/40 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
+<i class="fas fa-trophy"></i> Vitrina de Campeonatos por Categoría
+</span>
+<h3 class="text-2xl sm:text-3xl font-black text-white uppercase mt-1">Palmarés & Rendimiento en Competiciones</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-black text-amber-400 text-xs font-black px-4 py-1.5 rounded-full border border-amber-400/40 shadow-lg">4 Categorías Oficiales</span>
+<button x-show="esAdmin" @click="abrirFormTrofeo()" class="w-9 h-9 rounded-full bg-nico-green text-black font-black text-xl leading-none shadow-[0_0_15px_rgba(16,185,129,0.5)] hover:scale-110 transition-all" title="Agregar trofeo">+</button>
+</div>
+</div>
+<div x-show="esAdmin && mostrarFormTrofeo" x-transition class="bg-black/60 p-4 rounded-2xl border border-nico-green/40 space-y-3">
+<h4 class="text-xs font-black text-nico-green uppercase tracking-widest flex items-center gap-2"><i class="fas fa-trophy"></i> <span x-text="trofeoEditId ? 'Editar Trofeo' : 'Agregar Trofeo a la Vitrina'"></span></h4>
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+<input type="text" x-model="nuevoTrofeo.nombre" placeholder="Nombre del campeonato" class="admin-input">
+<select x-model="nuevoTrofeo.catKey" class="admin-input">
+<template x-for="cat in categoriasTorneo" :key="cat.key"><option :value="cat.key" x-text="cat.label"></option></template>
+</select>
+<input type="text" x-model="nuevoTrofeo.año" placeholder="Año (ej: 2026)" class="admin-input">
+<input type="text" x-model="nuevoTrofeo.descripcion" placeholder="Descripción corta" class="admin-input">
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-6 gap-2">
+<input type="number" x-model="nuevoTrofeo.rendimientoGlobal" placeholder="Rendimiento %" class="admin-input">
+<input type="text" x-model="nuevoTrofeo.posesion" placeholder="Posesión (ej: 65%)" class="admin-input">
+<input type="text" x-model="nuevoTrofeo.efectividadPases" placeholder="Pases (ej: 78%)" class="admin-input">
+<input type="number" x-model="nuevoTrofeo.golesAFavor" placeholder="Goles a favor" class="admin-input">
+<input type="number" x-model="nuevoTrofeo.golesEnContra" placeholder="Goles en contra" class="admin-input">
+<input type="text" x-model="nuevoTrofeo.disciplina" placeholder="Disciplina (ej: Excelente)" class="admin-input">
+</div>
+<textarea x-model="nuevoTrofeo.resumenTactico" rows="2" placeholder="Informe técnico de rendimiento en competición..." class="admin-input"></textarea>
+<div class="flex items-center gap-2">
+<button @click="guardarTrofeoForm()" class="admin-btn"><i class="fas fa-floppy-disk"></i> Guardar Trofeo</button>
+<button @click="mostrarFormTrofeo = false; trofeoEditId = null" class="admin-btn admin-btn-secondary">Cancelar</button>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<button @click="vitrinaCatTab = 'todos'; triggerParticles($event.clientX, $event.clientY)" :class="vitrinaCatTab === 'todos' ? 'bg-amber-400 text-black font-extrabold shadow-md' : 'bg-black text-gray-400 hover:text-white border border-white/10'" class="px-3.5 py-2 rounded-xl text-xs transition-all">Todos los Campeonatos</button>
+<template x-for="cat in categoriasTorneo" :key="'vit-'+cat.key">
+<button @click="vitrinaCatTab = cat.key; triggerParticles($event.clientX, $event.clientY)" :class="vitrinaCatTab === cat.key ? 'bg-amber-400 text-black font-extrabold shadow-md' : 'bg-black text-gray-400 hover:text-white border border-white/10'" class="px-3.5 py-2 rounded-xl text-xs transition-all" x-text="cat.label"></button>
+</template>
+</div>
+<div class="scroll-container rounded-2xl">
+<div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
+<template x-for="trophy in trophiesList" :key="trophy.id">
+<div x-show="vitrinaCatTab === 'todos' || vitrinaCatTab === trophy.catKey" @click="selectedTrophy = trophy; triggerParticles($event.clientX, $event.clientY)"
+:class="selectedTrophy && selectedTrophy.id === trophy.id ? 'border-amber-400 scale-[1.02] shadow-[0_0_20px_rgba(245,158,11,0.3)]' : 'border-amber-400/30 hover:border-amber-400'"
+class="vitrina-card p-5 rounded-2xl space-y-3 cursor-pointer transition-all relative">
+<template x-if="esAdmin">
+<div class="absolute -top-2 -right-2 z-20 flex gap-1">
+<button @click.stop="editarTrofeo(trophy)" class="btn-edit-mini" title="Editar trofeo"><i class="fas fa-pen"></i></button>
+<button @click.stop="eliminarTrofeo(trophy.id)" class="btn-del-mini" title="Eliminar trofeo"><i class="fas fa-minus"></i></button>
+</div>
+</template>
+<div class="flex items-center justify-between">
+<i class="fas" :class="[trophy.icono, trophy.color, 'text-2xl']"></i>
+<span class="text-[10px] font-mono font-bold text-amber-400 bg-black/80 px-2.5 py-1 rounded-full border border-amber-400/30" x-text="trophy.año"></span>
+</div>
+<div>
+<h4 class="font-black text-white text-sm uppercase" x-text="trophy.nombre"></h4>
+<span class="text-[11px] font-bold text-nico-orange block mt-0.5" x-text="trophy.categoria"></span>
+<p class="text-[11px] text-gray-400 mt-1" x-text="trophy.descripcion"></p>
+</div>
+<div class="pt-2 border-t border-white/10 flex justify-between items-center text-[10px] font-bold text-gray-300">
+<span>Ver Rendimiento Táctico</span>
+<i class="fas fa-chart-line text-amber-400"></i>
+</div>
+</div>
+</template>
+</div>
+</div>
+</div>
+<div x-show="selectedTrophy !== null" class="glass-box p-6 sm:p-8 rounded-3xl border-t-4 border-t-amber-400 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
+<i class="fas fa-chart-pie"></i> Análisis Metodológico de Competición
+</span>
+<h3 class="text-2xl font-black text-white uppercase mt-1" x-text="'Evaluación: ' + (selectedTrophy ? selectedTrophy.nombre : '')"></h3>
+<span class="text-xs font-bold text-nico-orange uppercase tracking-wider" x-text="'Campeón: ' + (selectedTrophy ? selectedTrophy.categoria : '')"></span>
+</div>
+<div class="flex items-center gap-3 bg-black/80 px-4 py-2 rounded-2xl border border-amber-400/30">
+<i class="fas fa-award text-2xl text-amber-400"></i>
+<div>
+<span class="text-[9px] text-gray-400 font-bold uppercase block">Rendimiento Global</span>
+<span class="text-lg font-black text-amber-400" x-text="(selectedTrophy ? selectedTrophy.evaluacion.rendimientoGlobal : 0) + '%'"></span>
+<button x-show="esAdmin && modoEdicion" @click="editarAnalisis('rendimientoGlobal','Nuevo Rendimiento Global (%):', true)" class="btn-edit-mini ml-1" title="Editar rendimiento global"><i class="fas fa-pen"></i></button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<div class="glass-card p-4 rounded-2xl border border-white/5 space-y-1 text-center hover:border-nico-orange transition-colors">
+<span class="text-[10px] text-gray-400 uppercase font-bold block">Posesión Promedio</span>
+<span class="text-2xl font-black text-nico-orange" x-text="selectedTrophy ? selectedTrophy.evaluacion.posesion : ''"></span>
+<button x-show="esAdmin && modoEdicion" @click="editarAnalisis('posesion','Nueva Posesión Promedio (ej: 65%):', false)" class="btn-edit-mini" title="Editar posesión"><i class="fas fa-pen"></i></button>
+</div>
+<div class="glass-card p-4 rounded-2xl border border-white/5 space-y-1 text-center hover:border-nico-green transition-colors">
+<span class="text-[10px] text-gray-400 uppercase font-bold block">Efectividad de Pases</span>
+<span class="text-2xl font-black text-nico-green" x-text="selectedTrophy ? selectedTrophy.evaluacion.efectividadPases : ''"></span>
+<button x-show="esAdmin && modoEdicion" @click="editarAnalisis('efectividadPases','Nueva Efectividad de Pases (ej: 78%):', false)" class="btn-edit-mini" title="Editar efectividad de pases"><i class="fas fa-pen"></i></button>
+</div>
+<div class="glass-card p-4 rounded-2xl border border-white/5 space-y-1 text-center hover:border-white transition-colors">
+<span class="text-[10px] text-gray-400 uppercase font-bold block">Goles A Favor / En Contra</span>
+<span class="text-2xl font-black text-white" x-text="selectedTrophy ? selectedTrophy.evaluacion.golesAFavor + ' / ' + selectedTrophy.evaluacion.golesEnContra : ''"></span>
+<div x-show="esAdmin && modoEdicion" class="flex justify-center gap-1 mt-1">
+<button @click="editarAnalisis('golesAFavor','Goles a favor:', true)" class="btn-edit-mini" title="Editar goles a favor"><i class="fas fa-pen"></i></button>
+<button @click="editarAnalisis('golesEnContra','Goles en contra:', true)" class="btn-edit-mini" title="Editar goles en contra"><i class="fas fa-pen"></i></button>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl border border-white/5 space-y-1 text-center hover:border-amber-400 transition-colors">
+<span class="text-[10px] text-gray-400 uppercase font-bold block">Índice Disciplinario</span>
+<span class="text-xs font-extrabold text-amber-400 uppercase block mt-2" x-text="selectedTrophy ? selectedTrophy.evaluacion.disciplina : ''"></span>
+<button x-show="esAdmin && modoEdicion" @click="editarAnalisis('disciplina','Índice disciplinario (ej: Excelente, Regular, Malo):', false)" class="btn-edit-mini" title="Editar índice disciplinario"><i class="fas fa-pen"></i></button>
+</div>
+</div>
+<div class="bg-black/60 p-5 rounded-2xl border border-white/10 space-y-3">
+<h4 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+<i class="fas fa-clipboard-check text-nico-orange"></i> Informe Técnico de Rendimiento en Competición
+<button x-show="esAdmin && modoEdicion" @click="editarAnalisis('resumenTactico','Editar informe técnico:', false)" class="btn-edit-mini ml-1" title="Editar informe técnico"><i class="fas fa-pen"></i></button>
+</h4>
+<p class="text-xs text-gray-300 leading-relaxed" x-text="selectedTrophy ? selectedTrophy.evaluacion.resumenTactico : ''"></p>
+</div>
+</div>
+<div class="glass-box p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-black text-nico-orange uppercase tracking-widest flex items-center gap-2">
+<i class="fas fa-layer-group"></i> Simulación General de Competiciones
+</span>
+<h3 class="text-2xl font-black text-white uppercase mt-1">Evaluación Global del Equipo por Categoría</h3>
+</div>
+<span x-show="esAdmin" class="text-xs font-bold text-gray-400">Interactivo: Modifica el Rendimiento</span>
+<span x-show="!esAdmin" class="text-xs font-bold text-gray-400">Rendimiento oficial · Actualizado por el cuerpo técnico</span>
+</div>
+<div class="space-y-6">
+<template x-for="cat in evalCategories" :key="'eval-' + cat.catKey + '-' + cat.id">
+<div class="space-y-2">
+<div class="flex justify-between items-center text-xs font-black flex-wrap gap-2">
+<span class="text-white" x-text="cat.name"></span>
+<div class="flex items-center gap-4">
+<span class="hidden sm:inline-block transition-colors duration-500" :style="`color: ${getColorEval(cat.value)}`" x-text="cat.desc"></span>
+<template x-if="esAdmin">
+<div class="flex items-center bg-black rounded-lg border border-white/20 overflow-hidden shadow-lg">
+<button @click="cambiarEvalGlobal(cat.id, -5)" class="px-2.5 py-1.5 bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-400 transition-colors"><i class="fas fa-minus text-[10px]"></i></button>
+<div class="px-2 w-14 text-center transition-colors duration-500 text-sm" :style="`color: ${getColorEval(cat.value)}`"><span x-text="cat.value + '%'"></span></div>
+<button @click="cambiarEvalGlobal(cat.id, 5)" class="px-2.5 py-1.5 bg-white/5 hover:bg-green-500/20 text-gray-300 hover:text-green-400 transition-colors border-l border-white/20"><i class="fas fa-plus text-[10px]"></i></button>
+</div>
+</template>
+<template x-if="!esAdmin">
+<span class="text-sm font-black px-2" :style="`color: ${getColorEval(cat.value)}`" x-text="cat.value + '%'"></span>
+</template>
+</div>
+</div>
+<div class="w-full h-3 bg-black rounded-full overflow-hidden border border-white/10 p-0.5">
+<div class="h-full rounded-full transition-all duration-500 ease-out" :style="`width: ${cat.value}%; background-color: ${getColorEval(cat.value)}; box-shadow: 0 0 12px ${getColorEval(cat.value)}`"></div>
+</div>
+</div>
+</template>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 6: ASISTENCIA ==================== -->
+<div x-show="mainTab === 'asistencia'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Lista de Asistencia</span>
+<h3 class="text-2xl font-black text-white uppercase">Toca al jugador para marcar</h3>
+<p class="text-[11px] text-gray-400">1 toque = ✔ Presente (verde) • 2 toques = ✖ Ausente (rojo) • 3 toques = ⭕ Justificado (ámbar) • 4 toques = se limpia. Se guarda solo.</p>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-2">
+<template x-for="cat in categoriasAsistenciaVisibles" :key="cat.key">
+<button @click="asistenciaCat = cat.key" :class="asistenciaCat === cat.key ? 'bg-nico-green text-black font-extrabold scale-105' : 'bg-black text-gray-400 hover:text-white border border-white/10'" class="px-4 py-2 rounded-full text-xs font-black uppercase transition-all" x-text="cat.label"></button>
+</template>
+<input type="date" x-model="asistenciaFecha" class="bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-nico-green">
+</div>
+<div class="flex justify-center gap-3 text-center">
+<div class="bg-nico-green/10 border border-nico-green/40 rounded-xl px-4 py-2"><span class="text-lg font-black text-nico-green block" x-text="conteoAsistenciaHoy().presente"></span><span class="text-[9px] text-gray-400 font-bold uppercase">Presentes</span></div>
+<div class="bg-nico-red/10 border border-nico-red/40 rounded-xl px-4 py-2"><span class="text-lg font-black text-nico-red block" x-text="conteoAsistenciaHoy().ausente"></span><span class="text-[9px] text-gray-400 font-bold uppercase">Ausentes</span></div>
+<div class="bg-amber-400/10 border border-amber-400/40 rounded-xl px-4 py-2"><span class="text-lg font-black text-amber-400 block" x-text="conteoAsistenciaHoy().justificado"></span><span class="text-[9px] text-gray-400 font-bold uppercase">Justificados</span></div>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-white/10">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+<template x-for="player in playersDe(asistenciaCat)" :key="player.id">
+<div @click="ciclarAsistencia(player)" class="rounded-xl border-2 bg-[#0a0a0a] p-3 cursor-pointer transition-all duration-300 select-none"
+:class="estadoAsistencia(player) === 'presente' ? 'border-nico-green shadow-[0_0_15px_rgba(16,185,129,0.45)]' : (estadoAsistencia(player) === 'ausente' ? 'border-nico-red shadow-[0_0_15px_rgba(220,38,38,0.45)]' : (estadoAsistencia(player) === 'justificado' ? 'border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.45)]' : 'border-white/10 hover:border-white/30'))">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black text-white" x-text="'#' + player.dorsal"></span>
+<span class="text-[8px] font-bold text-amber-400" x-text="player.pos"></span>
+</div>
+<p class="text-[11px] font-bold text-gray-200 truncate mt-1" x-text="player.name"></p>
+<div class="mt-2 rounded-lg py-1 text-center text-[9px] font-black uppercase tracking-wider"
+:class="estadoAsistencia(player) === 'presente' ? 'bg-nico-green text-black' : (estadoAsistencia(player) === 'ausente' ? 'bg-nico-red text-white' : (estadoAsistencia(player) === 'justificado' ? 'bg-amber-400 text-black' : 'bg-black/60 text-gray-500'))"
+x-text="estadoAsistencia(player) === 'presente' ? '✔ PRESENTE' : (estadoAsistencia(player) === 'ausente' ? '✖ AUSENTE' : (estadoAsistencia(player) === 'justificado' ? '⭕ JUSTIFICADO' : 'TOCA PARA MARCAR'))"></div>
+</div>
+</template>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 7: MENSAJES ==================== -->
+<div x-show="mainTab === 'mensajes'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Bandeja de Entrada</span>
+<h3 class="text-2xl font-black text-white uppercase">Comentarios de Padres de Familia</h3>
+</div>
+<template x-if="encuestasPadres.length === 0">
+<div class="glass-box p-10 rounded-3xl border border-white/10 text-center text-gray-500 italic"><i class="fas fa-inbox text-3xl mb-3 block text-gray-600"></i>Aún no hay mensajes de los padres de familia.</div>
+</template>
+<template x-for="(enc, i) in encuestasPadres" :key="i">
+<div class="glass-box p-5 rounded-3xl border border-white/10 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2"><span class="text-xs font-black text-nico-orange uppercase" x-text="enc.padre"></span><span class="text-[10px] text-gray-500 font-bold" x-text="enc.fecha"></span></div>
+<div class="grid grid-cols-4 sm:grid-cols-11 gap-1.5 text-center">
+<template x-for="(a, j) in enc.aspectos" :key="j">
+<div class="bg-black/40 rounded-lg p-1.5 border border-white/5"><span class="text-[8px] text-gray-500 block" x-text="j+1"></span><span class="text-sm font-black" :class="a >= 4 ? 'text-nico-green' : (a >= 3 ? 'text-amber-400' : 'text-nico-red')" x-text="a || '—'"></span></div>
+</template>
+</div>
+<div class="space-y-2 text-[11px] text-gray-300">
+<p x-show="enc.gustaMas"><strong class="text-nico-green">Le gusta:</strong> <span x-text="enc.gustaMas"></span></p>
+<p x-show="enc.mejorar"><strong class="text-nico-orange">Mejorar:</strong> <span x-text="enc.mejorar"></span></p>
+<p x-show="enc.crecimiento"><strong class="text-white">Crecimiento:</strong> <span x-text="enc.crecimiento"></span><span x-show="enc.crecimientoWhy" x-text="' — ' + enc.crecimientoWhy"></span></p>
+<p x-show="enc.recomienda"><strong class="text-white">Recomienda:</strong> <span x-text="enc.recomienda"></span><span x-show="enc.recomiendaWhy" x-text="' — ' + enc.recomiendaWhy"></span></p>
+<p x-show="enc.observaciones"><strong class="text-amber-400">Observaciones:</strong> <span x-text="enc.observaciones"></span></p>
+</div>
+</div>
+</template>
+</div>
+
+<!-- ==================== SECCIÓN 8: PAGOS DEL CLUB (Estética Mejorada) ==================== -->
+<div x-show="mainTab === 'pagosClub'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Gestión Financiera</span>
+<h3 class="text-2xl font-black text-white uppercase">Pagos del Club</h3>
+<p class="text-xs text-gray-400">Registra cobros presenciales y valida comprobantes digitales · Cuota: $15.00 quincenal</p>
+</div>
+<div class="timer-box p-5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-nico-orange to-nico-red border border-nico-orange/40 flex items-center justify-center shadow-lg">
+<i class="fas fa-clock text-white text-2xl"></i>
+</div>
+<div>
+<h4 class="text-sm font-black text-white uppercase tracking-wider">Ciclo de Cobro Quincenal</h4>
+<p class="text-[11px] text-gray-300 mt-1">Próximo corte oficial: <span class="text-white bg-nico-orange/20 px-2 py-0.5 rounded border border-nico-orange/50 font-bold ml-1" x-text="proximaQuincena()"></span></p>
+</div>
+</div>
+<div class="text-center bg-black/50 border border-white/10 rounded-2xl px-6 py-2">
+<div class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" x-text="diasParaQuincena()"></div>
+<div class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Días restantes</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="admin-card-glow p-5 rounded-3xl border border-nico-green/40 space-y-4 bg-gradient-to-b from-black/80 to-nico-green/5">
+<h4 class="text-xs font-black text-nico-green uppercase flex items-center gap-2"><i class="fas fa-hand-holding-dollar"></i> Cobro Efectivo (Presencial)</h4>
+<div class="space-y-3">
+<select class="admin-input bg-black/60" x-model="pagoEfectivo.padreId">
+<option value="">Seleccionar padre de familia...</option>
+<template x-for="p in listaPadres" :key="p.id"><option :value="p.id" x-text="p.nombre + ' (' + p.usuario + ')'"></option></template>
+</select>
+<div class="flex gap-2">
+<select class="admin-input bg-black/60 w-2/3" x-model="pagoEfectivo.concepto">
+<option value="inscripcion">Inscripción ($15.00)</option><option value="mensualidad">Mensualidad ($15.00)</option><option value="otro">Otro monto</option>
+</select>
+<input type="number" step="0.01" class="admin-input bg-black/60 w-1/3" placeholder="Monto $" x-model="pagoEfectivo.monto">
+</div>
+<div class="flex gap-2">
+<input type="date" class="admin-input bg-black/60 w-1/2" x-model="pagoEfectivo.fecha">
+<input type="text" class="admin-input bg-black/60 w-1/2" placeholder="Referencia / Observación" x-model="pagoEfectivo.referencia">
+</div>
+<button @click="registrarPagoEfectivo()" class="w-full bg-gradient-to-r from-nico-green to-emerald-600 text-white font-black py-2.5 rounded-xl text-xs uppercase shadow-[0_0_15px_rgba(16,185,129,0.4)] hover:scale-[1.02] transition-transform"><i class="fas fa-check-circle mr-1"></i> Registrar Pago</button>
+</div>
+</div>
+<div class="admin-card-glow p-5 rounded-3xl border border-amber-400/40 space-y-4 bg-gradient-to-b from-black/80 to-amber-400/5">
+<h4 class="text-xs font-black text-amber-400 uppercase flex items-center gap-2"><i class="fas fa-file-invoice-dollar"></i> Comprobantes por Validar</h4>
+<div class="scroll-container-sm rounded-2xl pr-2">
+<template x-if="comprobantesPendientes().length === 0">
+<div class="text-center text-gray-500 italic py-12"><i class="fas fa-shield-check text-4xl mb-3 block text-gray-600 opacity-50"></i>Todo al día. No hay pendientes.</div>
+</template>
+<template x-for="c in comprobantesPendientes()" :key="c.id">
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 mb-2 hover:border-amber-400/50 transition-colors shadow-lg">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="text-xs font-black text-white" x-text="c.padreNombre"></p>
+<span class="text-[9px] px-2 py-0.5 rounded bg-nico-orange/20 text-nico-orange font-bold uppercase tracking-wider" x-text="c.concepto"></span>
+</div>
+<span class="text-lg font-black text-nico-green" x-text="'$' + c.monto.toFixed(2)"></span>
+</div>
+<p class="text-[10px] text-gray-400"><i class="fas fa-calendar-day mr-1 text-gray-500"></i><span x-text="c.fecha"></span> | Ref: <span class="text-white" x-text="c.referencia || 'N/A'"></span></p>
+<div class="flex gap-2 mt-3 pt-3 border-t border-white/5">
+<button @click="validarComprobante(c.id, true)" class="flex-1 bg-nico-green/20 hover:bg-nico-green text-nico-green hover:text-white border border-nico-green/50 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all"><i class="fas fa-check mr-1"></i> Aprobar</button>
+<button @click="validarComprobante(c.id, false)" class="flex-1 bg-nico-red/20 hover:bg-nico-red text-nico-red hover:text-white border border-nico-red/50 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all"><i class="fas fa-times mr-1"></i> Rechazar</button>
+</div>
+</div>
+</template>
+</div>
+</div>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-white/10 space-y-4 shadow-2xl">
+<h4 class="text-xs font-black text-white uppercase flex items-center gap-2"><i class="fas fa-history text-nico-blue"></i> Historial General de Pagos</h4>
+<div class="scroll-container rounded-2xl border border-white/5 bg-black/40">
+<template x-if="historialPagosClub().length === 0">
+<div class="text-center text-gray-500 italic py-10"><i class="fas fa-receipt text-3xl mb-2 block text-gray-600"></i>Sin movimientos registrados</div>
+</template>
+<table class="w-full text-xs modern-table" x-show="historialPagosClub().length > 0">
+<thead class="sticky top-0 bg-black/90 backdrop-blur-md z-10 shadow-md">
+<tr class="text-gray-400 uppercase font-black text-[9px] tracking-widest border-b border-white/10">
+<th class="py-3 px-4 text-left">Fecha</th>
+<th class="py-3 px-4 text-left">Padre / Familia</th>
+<th class="py-3 px-4 text-left">Concepto</th>
+<th class="py-3 px-4 text-center">Monto</th>
+<th class="py-3 px-4 text-center">Método</th>
+<th class="py-3 px-4 text-center">Estado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<template x-for="p in historialPagosClub()" :key="p.id">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-3 px-4 text-gray-400 font-mono text-[10px]" x-text="p.fecha"></td>
+<td class="py-3 px-4 text-white font-bold group-hover:text-nico-orange transition-colors" x-text="p.padreNombre"></td>
+<td class="py-3 px-4 text-gray-300 font-semibold" x-text="p.concepto"></td>
+<td class="py-3 px-4 text-center text-nico-green font-black" x-text="'$' + p.monto.toFixed(2)"></td>
+<td class="py-3 px-4 text-center"><span class="text-[9px] px-2 py-1 rounded font-black uppercase tracking-wider" :class="p.metodo === 'efectivo' ? 'bg-nico-green/20 text-nico-green border border-nico-green/30' : 'bg-nico-blue/20 text-nico-blue border border-nico-blue/30'" x-text="p.metodo"></span></td>
+<td class="py-3 px-4 text-center"><span class="text-[9px] px-2 py-1 rounded font-black uppercase tracking-wider" :class="p.estado === 'validado' ? 'bg-nico-green/20 text-nico-green border border-nico-green/30' : (p.estado === 'rechazado' ? 'bg-nico-red/20 text-nico-red border border-nico-red/30' : 'bg-amber-400/20 text-amber-400 border border-amber-400/30')" x-text="p.estado"></span></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 9: PAGO DE PLATAFORMA ==================== -->
+<div x-show="mainTab === 'pagosPlat'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Gestión Financiera del Club</span>
+<h3 class="text-2xl font-black text-white uppercase">Pago de la Plataforma</h3>
+<p class="text-xs text-gray-400">Valores definidos: Creación $100.00 · Mensualidad $35.00 (1er mes gratis)</p>
+</div>
+<div class="grid sm:grid-cols-2 gap-4">
+<div class="glass-box p-6 rounded-3xl border border-nico-orange/40 space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black text-nico-orange uppercase">Creación / Plataforma</span>
+<i class="fas fa-rocket text-nico-orange text-xl"></i>
+</div>
+<div class="text-4xl font-black text-white">$100<span class="text-lg text-gray-400">.00</span></div>
+<p class="text-[11px] text-gray-400">Pago único por activación del club en la plataforma.</p>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-nico-green/40 space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black text-nico-green uppercase">Mensualidad</span>
+<i class="fas fa-calendar-check text-nico-green text-xl"></i>
+</div>
+<div class="text-4xl font-black text-white">$35<span class="text-lg text-gray-400">.00</span></div>
+<p class="text-[11px] text-gray-400">Mensualidad recurrente · <span class="text-nico-green font-bold">Primer mes GRATIS</span></p>
+</div>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-amber-400/40 space-y-4">
+<h4 class="text-xs font-black text-amber-400 uppercase flex items-center gap-2"><i class="fas fa-credit-card"></i> Métodos de Pago del Creador</h4>
+<div class="grid sm:grid-cols-2 gap-4">
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 text-center space-y-2">
+<i class="fas fa-qrcode text-5xl text-amber-400"></i>
+<p class="text-xs font-bold text-white">Código QR</p>
+<p class="text-[10px] text-gray-400">Escanea para pagar directamente al desarrollador.</p>
+<div class="w-32 h-32 mx-auto bg-white rounded-xl p-2">
+<img src="img/qr-pago.png" alt="QR de Pago" class="w-full h-full object-contain" onerror="this.outerHTML='<div class=\'w-full h-full flex items-center justify-center text-gray-400 text-[10px]\'>QR no disponible</div>'">
+</div>
+</div>
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 space-y-2">
+<div class="flex items-center gap-2 text-nico-blue">
+<i class="fas fa-building-columns text-lg"></i>
+<p class="text-xs font-black uppercase">Cuenta Bancaria</p>
+</div>
+<div class="text-[11px] space-y-1 text-gray-300">
+<p><strong class="text-white">Banco:</strong> Banco General</p>
+<p><strong class="text-white">Tipo:</strong> Cuenta de Ahorros</p>
+<p><strong class="text-white">Número:</strong> <span class="text-nico-orange font-mono">123-456-7890</span></p>
+<p><strong class="text-white">Titular:</strong> G&M Deportes S.A.</p>
+<p><strong class="text-white">Cédula:</strong> 8-888-8888</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-nico-green/40 space-y-4">
+<h4 class="text-xs font-black text-nico-green uppercase flex items-center gap-2"><i class="fas fa-file-invoice"></i> Reportar Pago de Plataforma</h4>
+<p class="text-[11px] text-gray-400">Carga el comprobante para revisión manual por parte del creador (prevención de comprobantes falsos/editados por IA).</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<select class="admin-input" x-model="pagoPlataforma.tipo">
+<option value="creacion">Creación ($100.00)</option>
+<option value="mensualidad">Mensualidad ($35.00)</option>
+</select>
+<input type="text" class="admin-input" placeholder="Referencia / N° operación" x-model="pagoPlataforma.referencia">
+<input type="date" class="admin-input" x-model="pagoPlataforma.fecha">
+<input type="text" class="admin-input" placeholder="Observaciones" x-model="pagoPlataforma.observaciones">
+</div>
+<div class="bg-black/60 p-3 rounded-xl border border-dashed border-white/20 text-center">
+<label class="cursor-pointer block">
+<i class="fas fa-cloud-upload-alt text-2xl text-nico-orange mb-2"></i>
+<p class="text-xs text-white font-bold">Adjuntar comprobante (factura/captura)</p>
+<p class="text-[10px] text-gray-500 mt-1">PNG, JPG o PDF · Máx 5MB</p>
+<input type="file" class="hidden" accept="image/*,.pdf" @change="handleComprobante($event)">
+</label>
+<div x-show="pagoPlataforma.comprobanteNombre" class="mt-2 text-xs text-nico-green font-bold">
+<i class="fas fa-check-circle"></i> <span x-text="pagoPlataforma.comprobanteNombre"></span>
+</div>
+</div>
+<button @click="enviarComprobantePlataforma()" class="admin-btn w-full" style="background: linear-gradient(135deg, #10B981, #059669);"><i class="fas fa-paper-plane"></i> Enviar a Revisión</button>
+<p class="text-[10px] text-gray-500 text-center italic">🔔 Se enviará notificación directa al creador para verificación manual.</p>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-white/10 space-y-4">
+<h4 class="text-xs font-black text-white uppercase flex items-center gap-2"><i class="fas fa-history"></i> Mis Pagos de Plataforma</h4>
+<div class="scroll-container-sm rounded-2xl">
+<template x-if="pagosPlataformaLista.length === 0">
+<div class="text-center text-gray-500 italic py-6">Sin pagos registrados</div>
+</template>
+<template x-for="p in pagosPlataformaLista" :key="p.id">
+<div class="bg-black/60 p-3 rounded-xl border border-white/10 mb-2 flex justify-between items-center">
+<div>
+<p class="text-xs font-black text-white" x-text="p.tipo === 'creacion' ? 'Creación' : 'Mensualidad'"></p>
+<p class="text-[10px] text-gray-400">Ref: <span x-text="p.referencia || '—'"></span> · <span x-text="p.fecha"></span></p>
+</div>
+<span class="text-[10px] px-2 py-1 rounded-full font-bold" :class="p.estado === 'validado' ? 'badge-validado' : (p.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente')" x-text="p.estado.toUpperCase()"></span>
+</div>
+</template>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 10: GESTIÓN DE ENTRENADORES ==================== -->
+<div x-show="mainTab === 'entrenadores'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Control de Acceso</span>
+<h3 class="text-2xl font-black text-white uppercase">Gestión de Entrenadores</h3>
+<p class="text-xs text-gray-400">Crea credenciales para DT con acceso restringido a su categoría asignada</p>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-nico-blue/40 space-y-4">
+<h4 class="text-xs font-black text-nico-blue uppercase flex items-center gap-2"><i class="fas fa-user-plus"></i> Registrar Nuevo Entrenador</h4>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<input type="text" class="admin-input" placeholder="Nombre completo" x-model="nuevoEntrenador.nombre">
+<input type="text" class="admin-input" placeholder="Usuario (ej: dt.sub6)" x-model="nuevoEntrenador.usuario">
+<input type="password" class="admin-input" placeholder="Contraseña" x-model="nuevoEntrenador.password">
+<select class="admin-input" x-model="nuevoEntrenador.catKey">
+<option value="">Categoría asignada...</option>
+<template x-for="cat in categoriasTorneo" :key="cat.key"><option :value="cat.key" x-text="cat.label"></option></template>
+</select>
+</div>
+<button @click="registrarEntrenador()" class="admin-btn" style="background: linear-gradient(135deg, #0B4F9C, #052a55); box-shadow: 0 0 15px rgba(11,79,156,0.4);"><i class="fas fa-user-tie"></i> Crear Entrenador</button>
+<span class="text-xs font-bold ml-2" :class="entrenadorMsg.includes('✅') ? 'text-nico-green' : 'text-nico-red'" x-text="entrenadorMsg" x-show="entrenadorMsg"></span>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-white/10 space-y-4">
+<h4 class="text-xs font-black text-white uppercase flex items-center gap-2"><i class="fas fa-users"></i> Entrenadores Registrados (<span x-text="listaEntrenadores.length"></span>)</h4>
+<template x-if="listaEntrenadores.length === 0">
+<p class="text-xs text-gray-500 text-center py-6">No hay entrenadores registrados</p>
+</template>
+<div class="scroll-container-sm rounded-2xl">
+<template x-for="dt in listaEntrenadores" :key="dt.id">
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-nico-blue/20 border border-nico-blue/40 flex items-center justify-center">
+<i class="fas fa-user-tie text-nico-blue text-xl"></i>
+</div>
+<div>
+<p class="text-sm font-black text-white" x-text="dt.nombre"></p>
+<p class="text-[10px] text-gray-400">Usuario: <span class="text-nico-blue font-mono" x-text="dt.usuario"></span></p>
+<p class="text-[10px] text-nico-green font-bold">Categoría: <span x-text="dt.catLabel"></span></p>
+</div>
+</div>
+<div class="flex gap-2">
+<button @click="editarEntrenador(dt)" class="btn-edit-mini"><i class="fas fa-pen"></i></button>
+<button @click="eliminarEntrenador(dt.id)" class="btn-del-mini"><i class="fas fa-trash"></i></button>
+</div>
+</div>
+</template>
+</div>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-amber-400/30 space-y-3">
+<h4 class="text-xs font-black text-amber-400 uppercase flex items-center gap-2"><i class="fas fa-shield-halved"></i> Permisos del Rol Entrenador</h4>
+<div class="grid sm:grid-cols-2 gap-3 text-[11px]">
+<div class="bg-nico-green/10 border border-nico-green/30 p-3 rounded-xl">
+<p class="text-nico-green font-black uppercase mb-2"><i class="fas fa-check"></i> Acceso Permitido</p>
+<ul class="text-gray-300 space-y-1">
+<li>• Vitrina de Campeonatos</li>
+<li>• Torneo & Tabla (solo su categoría)</li>
+<li>• Cuerpo Técnico</li>
+<li>• Categorías (solo la asignada)</li>
+<li>• Escudo e Historia</li>
+<li>• Asistencia (solo su categoría)</li>
+<li>• Evaluación de jugadores (solo su categoría)</li>
+</ul>
+</div>
+<div class="bg-nico-red/10 border border-nico-red/30 p-3 rounded-xl">
+<p class="text-nico-red font-black uppercase mb-2"><i class="fas fa-ban"></i> Bloqueado</p>
+<ul class="text-gray-300 space-y-1">
+<li>• Panel Administrativo general</li>
+<li>• Evaluación de Padres</li>
+<li>• Mensajes de padres</li>
+<li>• Asistencia Global</li>
+<li>• Pagos del Club</li>
+<li>• Pago de Plataforma</li>
+<li>• Gestión de Entrenadores</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 11: PORTAL DE PADRES (MODIFICADA) ==================== -->
+<div x-show="mainTab === 'portal'" class="space-y-6 anim-entry">
+<div class="text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Portal de Familias</span>
+<h3 class="text-2xl font-black text-white uppercase">Mi Cuenta</h3>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-nico-orange/40 space-y-4 shadow-[0_0_20px_rgba(255,85,0,0.15)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-nico-orange/10 blur-[50px] rounded-full"></div>
+<h4 class="text-xs font-black text-nico-orange uppercase flex items-center gap-2 relative z-10"><i class="fas fa-child-reaching"></i> Trayectoria Deportiva de mi Hijo(a)</h4>
+<template x-if="!hijoPlayer">
+<div class="text-center text-gray-500 italic text-xs py-10 relative z-10">
+<i class="fas fa-user-slash text-4xl mb-3 block text-gray-600 opacity-50"></i>
+Tu cuenta no tiene un jugador asignado.<br>Contacta al administrador para vincular a tu hijo(a).
+</div>
+</template>
+<template x-if="hijoPlayer">
+<div class="space-y-4 relative z-10">
+<div class="flex items-center gap-4 flex-wrap bg-black/50 p-4 rounded-2xl border border-white/5">
+<div class="w-20 h-24 rounded-xl bg-gradient-to-b from-[#1a1a1a] to-black border border-white/15 p-1.5 flex items-end justify-center overflow-hidden shrink-0 shadow-lg relative">
+<img :src="hijoPlayer.foto || 'img/jugadores/' + hijoPlayer.catKey + '/' + hijoPlayer.dorsal + '.png'" alt="Foto de mi hijo" class="h-full object-contain relative z-10">
+</div>
+<div class="flex-1 min-w-[160px]">
+<p class="text-xl font-black text-white uppercase drop-shadow" x-text="hijoPlayer.name"></p>
+<p class="text-[11px] text-gray-300 font-semibold mt-0.5">Categoría <span class="text-nico-orange font-bold px-1.5 py-0.5 bg-nico-orange/10 rounded" x-text="hijoCatLabel"></span> • Dorsal <span class="text-white font-black" x-text="'#'+hijoPlayer.dorsal"></span> • <span class="text-amber-400" x-text="hijoPlayer.pos"></span></p>
+<div class="flex items-center gap-2 mt-2.5 flex-wrap">
+<span class="player-stat-mini stat-gol text-xs px-2 py-1">⚽ <span x-text="getStats(hijoPlayer).goles"></span></span>
+<span class="player-stat-mini stat-asis text-xs px-2 py-1">🎯 <span x-text="getStats(hijoPlayer).asistencias"></span></span>
+<span class="player-stat-mini stat-mvp text-xs px-2 py-1">🏅 MVP ×<span x-text="getStats(hijoPlayer).mvp"></span></span>
+</div>
+</div>
+<template x-if="notaJugador(hijoPlayer) !== null">
+<div class="text-center px-4">
+<span class="text-[9px] text-gray-400 font-bold uppercase block mb-1">Calificación</span>
+<span class="ss-badge px-3 py-1.5 text-sm shadow-lg" :class="getSSBadgeClass(hijoPlayer)" x-text="'SS ' + notaJugador(hijoPlayer).toFixed(1)"></span>
+</div>
+</template>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button @click="playerModal = hijoPlayer; triggerParticles($event.clientX, $event.clientY)" class="w-full bg-white/5 hover:bg-white/10 text-white border border-white/20 hover:border-white font-black py-3 rounded-xl text-xs uppercase transition-all shadow-lg flex items-center justify-center gap-2"><i class="fas fa-id-card text-nico-orange"></i> Ver Ficha Completa</button>
+<button @click="abrirEvalVer(hijoPlayer); triggerParticles($event.clientX, $event.clientY)" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:scale-[1.02] text-black font-black py-3 rounded-xl text-xs uppercase transition-all shadow-[0_0_15px_rgba(245,158,11,0.4)] flex items-center justify-center gap-2"><i class="fas fa-file-lines"></i> Hoja de Evaluación</button>
+</div>
+</div>
+</template>
+</div>
+<div class="mt-6 border-t border-white/10 pt-6">
+<h4 class="text-xs font-black text-gray-400 uppercase flex items-center gap-2 mb-4"><i class="fas fa-wallet"></i> Facturación y Pagos</h4>
+<div class="grid sm:grid-cols-3 gap-4">
+<div class="glass-box p-5 rounded-2xl border border-white/5 text-center bg-black/60">
+<i class="fas fa-calendar-xmark text-2xl text-nico-orange mb-2 opacity-80"></i>
+<p class="text-[10px] text-gray-400 uppercase font-bold">Fecha Límite</p>
+<p class="text-xl font-black text-white mt-1" x-text="proximaQuincena()"></p>
+</div>
+<div class="glass-box p-5 rounded-2xl border border-white/5 text-center bg-black/60">
+<i class="fas fa-circle-dollar-to-slot text-2xl text-nico-green mb-2 opacity-80"></i>
+<p class="text-[10px] text-gray-400 uppercase font-bold">Cuota Regular</p>
+<p class="text-xl font-black text-white mt-1">$15.00 <span class="text-[9px] text-gray-500 block">Quincenal</span></p>
+</div>
+<div class="glass-box p-5 rounded-2xl text-center shadow-lg transition-colors" :class="estadoCuentaPadre() === 'Vigente' ? 'border-nico-green/40 bg-nico-green/5' : 'border-nico-red/40 bg-nico-red/5'">
+<i class="fas" :class="estadoCuentaPadre() === 'Vigente' ? 'fa-check-circle text-nico-green' : 'fa-exclamation-triangle text-nico-red animate-pulse'" class="text-2xl mb-2"></i>
+<p class="text-[10px] text-gray-400 uppercase font-bold">Estado Actual</p>
+<p class="text-xl font-black mt-1 uppercase" :class="estadoCuentaPadre() === 'Vigente' ? 'text-nico-green' : 'text-nico-red'" x-text="estadoCuentaPadre()"></p>
+</div>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-4 mt-6">
+<div class="glass-box p-6 rounded-3xl border border-nico-blue/40 space-y-4">
+<h4 class="text-xs font-black text-nico-blue uppercase flex items-center gap-2"><i class="fas fa-building-columns"></i> Información Bancaria</h4>
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 space-y-2 text-[11px]">
+<p><strong class="text-white">Banco:</strong> <span class="text-gray-300">Banco General</span></p>
+<p><strong class="text-white">Tipo de Cuenta:</strong> <span class="text-gray-300">Ahorros</span></p>
+<p><strong class="text-white">Número:</strong> <span class="text-nico-orange font-mono">123-456-7890</span></p>
+<p><strong class="text-white">Titular:</strong> <span class="text-gray-300">Academia Nico Sport</span></p>
+</div>
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 text-center space-y-2 flex justify-between items-center">
+<div class="text-left"><p class="text-[10px] text-gray-400 uppercase font-bold">Código QR / Yappy</p><p class="text-[10px] text-gray-500">Escanea con tu app</p></div>
+<div class="w-16 h-16 bg-white rounded-xl p-1"><img src="img/qr-pago.png" alt="QR Yappy" class="w-full h-full object-contain" onerror="this.style.display='none'"></div>
+</div>
+</div>
+<div class="glass-box p-6 rounded-3xl border border-nico-green/30 space-y-4">
+<h4 class="text-xs font-black text-nico-green uppercase flex items-center gap-2"><i class="fas fa-file-invoice-dollar"></i> Reportar Pago</h4>
+<div class="space-y-3">
+<select class="admin-input" x-model="reportePago.concepto"><option value="Inscripción">Inscripción ($15.00)</option><option value="Mensualidad">Mensualidad ($15.00)</option><option value="Otro">Otro monto</option></select>
+<div class="flex gap-2"><input type="number" step="0.01" class="admin-input w-1/2" placeholder="Monto ($)" x-model="reportePago.monto"><input type="date" class="admin-input w-1/2" x-model="reportePago.fecha"></div>
+<input type="text" class="admin-input" placeholder="N° operación / Referencia" x-model="reportePago.referencia">
+<div class="bg-black/60 p-3 rounded-xl border border-dashed border-white/20 text-center hover:border-nico-green transition-colors">
+<label class="cursor-pointer block"><i class="fas fa-camera text-xl text-nico-green mb-1"></i><p class="text-[10px] text-white font-bold">Adjuntar foto comprobante</p><input type="file" class="hidden" accept="image/*" @change="handleComprobantePadre($event)"></label>
+<div x-show="reportePago.comprobanteNombre" class="mt-2 text-[10px] text-nico-green font-bold"><i class="fas fa-check-circle"></i> <span x-text="reportePago.comprobanteNombre"></span></div>
+</div>
+<button @click="enviarReportePago()" class="admin-btn w-full bg-gradient-to-r from-nico-green to-emerald-600"><i class="fas fa-paper-plane"></i> Enviar y Notificar</button>
+</div>
+</div>
+</div>
+<div class="glass-box p-5 rounded-3xl border border-white/10 space-y-4 mt-6">
+<h4 class="text-xs font-black text-white uppercase flex items-center gap-2"><i class="fas fa-history"></i> Mi Historial de Pagos</h4>
+<div class="scroll-container rounded-2xl">
+<template x-if="misPagos().length === 0"><div class="text-center text-gray-500 italic py-8">Sin pagos registrados</div></template>
+<template x-for="p in misPagos()" :key="p.id">
+<div class="bg-black/60 p-3 rounded-xl border border-white/10 mb-2 flex justify-between items-center hover:border-white/30 transition-colors">
+<div>
+<p class="text-xs font-black text-white" x-text="p.concepto"></p>
+<p class="text-[10px] text-gray-400">Ref: <span x-text="p.referencia || '—'"></span> · <span x-text="p.fecha"></span></p>
+</div>
+<div class="text-right">
+<p class="text-sm font-black text-nico-green" x-text="'$' + p.monto.toFixed(2)"></p>
+<span class="text-[8px] px-2 py-0.5 rounded font-bold uppercase tracking-widest" :class="p.estado === 'validado' ? 'bg-nico-green/20 text-nico-green border border-nico-green/30' : (p.estado === 'rechazado' ? 'bg-nico-red/20 text-nico-red border border-nico-red/30' : 'bg-amber-400/20 text-amber-400 border border-amber-400/30')" x-text="p.estado"></span>
+</div>
+</div>
+</template>
+</div>
+</div>
+</div>
+
+<!-- ==================== SECCIÓN 12: PANEL ADMIN (NUEVA UNIFICACIÓN) ==================== -->
+<div x-show="mainTab === 'admin'" class="space-y-6 anim-entry">
+<div class="glass-box p-6 rounded-3xl border border-nico-orange/40 text-center space-y-2">
+<span class="text-xs font-black text-white border border-white/20 bg-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">Panel de Administración</span>
+<h3 class="text-2xl font-black text-white uppercase">Gestión del Club</h3>
+<p class="text-xs text-gray-400">Registro unificado 2 en 1 · edita estadísticas en plantillas con el ✏️ lapicito</p>
+</div>
+<div class="admin-section relative overflow-hidden bg-gradient-to-br from-black to-[#0a0a0a]">
+<div class="absolute top-0 right-0 w-40 h-40 bg-nico-orange/5 blur-[60px] rounded-full pointer-events-none"></div>
+<h3 class="flex items-center gap-2"><i class="fas fa-user-plus text-nico-orange"></i> Registro Unificado: Jugador y Familia</h3>
+<p class="text-[11px] text-gray-400 mb-4">Añade al jugador y crea la cuenta del padre/madre en un solo paso para vinculación inmediata en la plataforma.</p>
+<div class="flex items-center gap-6 mb-5 bg-black/40 p-3 rounded-xl border border-white/5 inline-flex">
+<label class="text-xs text-white font-black uppercase tracking-wider cursor-pointer flex items-center gap-2"><input type="radio" value="con_padre" x-model="adminRegistro.tipo" class="accent-nico-orange"> Menor de Edad (Con Tutor)</label>
+<label class="text-xs text-white font-black uppercase tracking-wider cursor-pointer flex items-center gap-2"><input type="radio" value="sin_padre" x-model="adminRegistro.tipo" class="accent-nico-orange"> Adulto (Sin Tutor)</label>
+</div>
+<div class="p-4 rounded-2xl border border-nico-orange/30 bg-nico-orange/5 space-y-3 mb-4 shadow-lg">
+<p class="text-[10px] font-black text-nico-orange uppercase tracking-widest flex items-center gap-2"><i class="fas fa-running"></i> Datos del Jugador a Inscribir</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+<input type="text" class="admin-input !bg-black/60 focus:!border-nico-orange" placeholder="Nombre completo del jugador" x-model="adminRegistro.jugadorNombre">
+<select class="admin-input !bg-black/60 focus:!border-nico-orange" x-model="adminRegistro.catKey">
+<option value="">Seleccionar Categoría...</option>
+<template x-for="cat in categoriasTorneo" :key="cat.key"><option :value="cat.key" x-text="cat.label"></option></template>
+</select>
+<input type="number" class="admin-input !bg-black/60 focus:!border-nico-orange" :placeholder="'Dorsal (Sugerido libre: #' + dorsalLibreParaAdmin + ')'" x-model="adminRegistro.jugadorDorsal">
+<select class="admin-input !bg-black/60 focus:!border-nico-orange" x-model="adminRegistro.jugadorPos">
+<option value="POR">Portero (POR)</option><option value="DEF">Defensa (DEF)</option><option value="MED" selected>Mediocampo (MED)</option><option value="DEL">Delantero (DEL)</option>
+</select>
+</div>
+</div>
+<div x-show="adminRegistro.tipo === 'con_padre'" x-transition class="p-4 rounded-2xl border border-nico-green/30 bg-nico-green/5 space-y-3 mb-4 shadow-lg">
+<p class="text-[10px] font-black text-nico-green uppercase tracking-widest flex items-center gap-2"><i class="fas fa-user-shield"></i> Credenciales de la Familia (Para la App)</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<input type="text" class="admin-input !bg-black/60 focus:!border-nico-green" placeholder="Nombre del Padre/Madre" x-model="adminRegistro.padreNombre">
+<input type="text" class="admin-input !bg-black/60 focus:!border-nico-green" placeholder="Usuario de acceso (ej: familia.perez)" x-model="adminRegistro.padreUsuario">
+<input type="password" class="admin-input !bg-black/60 focus:!border-nico-green" placeholder="Contraseña de acceso" x-model="adminRegistro.padrePassword">
+</div>
+<p class="text-[9px] text-gray-500 italic">Al crear la cuenta, el padre verá inmediatamente el progreso de este jugador en su portal.</p>
+</div>
+<div class="flex items-center gap-4 flex-wrap pt-2 border-t border-white/10">
+<button class="admin-btn bg-gradient-to-r from-nico-orange to-red-600 px-6 py-2.5 rounded-xl shadow-[0_0_15px_rgba(255,85,0,0.3)] hover:scale-[1.02] transition-transform" @click="registrarUnificado()"><i class="fas fa-check-circle mr-1"></i> Completar Registro</button>
+<div class="text-xs font-bold px-3 py-1.5 rounded-lg border" :class="adminRegistroMsg.includes('✅') ? 'text-nico-green bg-nico-green/10 border-nico-green/30' : 'text-nico-red bg-nico-red/10 border-nico-red/30'" x-text="adminRegistroMsg" x-show="adminRegistroMsg" x-transition></div>
+</div>
+</div>
+<div class="admin-section">
+<h3><i class="fas fa-users"></i> Familias Registradas en Plataforma (<span x-text="listaPadres.length"></span>)</h3>
+<template x-if="listaPadres.length === 0"><p class="text-xs text-gray-500 text-center py-6 italic border border-white/5 rounded-xl bg-black/30">No hay familias registradas aún.</p></template>
+<div class="grid sm:grid-cols-2 gap-3">
+<template x-for="padre in listaPadres" :key="padre.id">
+<div class="bg-black/40 border border-white/10 rounded-xl p-3 flex justify-between items-center hover:border-nico-green/30 transition-colors group">
+<div>
+<div class="font-black text-white text-sm" x-text="padre.nombre"></div>
+<div class="text-[10px] text-gray-400 font-mono">User: <span class="text-nico-orange" x-text="padre.usuario"></span></div>
+<div class="text-[10px] font-bold mt-1" :class="padre.hijoId ? 'text-nico-green' : 'text-gray-500'">
+<i class="fas fa-child-reaching mr-1"></i>
+<span x-text="padre.hijoCat && padre.hijoId ? 'Hijo vinculado: ' + ((playersDe(padre.hijoCat).find(p => p.id === padre.hijoId) || {}).name || 'Desconocido') + ' (' + padre.hijoCat + ')' : 'Sin jugador vinculado'"></span>
+</div>
+</div>
+<button class="text-red-500 hover:text-white text-xs w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500 transition-all flex items-center justify-center opacity-50 group-hover:opacity-100" title="Eliminar familia" @click="eliminarPadre(padre.id)"><i class="fas fa-trash"></i></button>
+</div>
+</template>
+</div>
+</div>
+<div class="admin-section">
+<h3><i class="fas fa-layer-group"></i> Gestión de Categorías</h3>
+<p class="text-[11px] text-gray-400 mb-3">Crea, edita o elimina divisiones del club. (Las oficiales no se pueden borrar).</p>
+<template x-for="(cat, i) in categoriasAdmin" :key="cat.key">
+<div class="bg-black/40 border border-white/10 rounded-xl p-2.5 mb-2 flex justify-between items-center hover:border-nico-orange/30 transition-colors">
+<div class="flex-1 mr-2 min-w-0">
+<div class="font-black text-white text-xs truncate uppercase tracking-wide" x-text="cat.label"></div>
+<div class="text-[10px] text-gray-500 truncate mt-0.5" x-text="cat.descripcion"></div>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<button @click="subirCategoria(i)" :disabled="i === 0" class="btn-edit-mini disabled:opacity-20" title="Subir orden"><i class="fas fa-arrow-up"></i></button>
+<button @click="bajarCategoria(i)" :disabled="i === categoriasAdmin.length - 1" class="btn-edit-mini disabled:opacity-20" title="Bajar orden"><i class="fas fa-arrow-down"></i></button>
+<button @click="editarCategoria(cat)" class="btn-edit-mini bg-white/5" title="Editar detalles"><i class="fas fa-pen"></i></button>
+<button x-show="!cat.core" @click="eliminarCategoria(cat)" class="btn-del-mini" title="Eliminar categoría"><i class="fas fa-trash"></i></button>
+<span x-show="cat.core" class="text-[8px] text-amber-400 font-black px-1.5 py-0.5 bg-amber-400/10 rounded border border-amber-400/20" title="Categoría base del sistema">OFICIAL</span>
+</div>
+</div>
+</template>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4 p-3 border border-white/10 rounded-xl bg-black/20">
+<input type="text" class="admin-input mb-0" placeholder="Nombre nueva categoría (ej: Sub-Femenina)" x-model="catNueva.label">
+<input type="text" class="admin-input mb-0" placeholder="Descripción corta" x-model="catNueva.descripcion">
+<button class="admin-btn sm:col-span-2 mt-1 bg-gradient-to-r from-nico-blue to-[#052a55]" @click="crearCategoria()"><i class="fas fa-plus"></i> Crear Nueva Categoría</button>
+</div>
+</div>
+</div>
+</main>
+<!-- SPONSORS + REDES -->
+<section class="mt-12 border-t border-white/10 pt-12 relative z-10">
+<div class="max-w-5xl mx-auto px-4 space-y-10">
+<div class="text-center space-y-4">
+<span class="text-xs font-black text-gray-500 uppercase tracking-widest block">Nuestros Aliados Oficiales</span>
+<div class="sponsors-marquee">
+<div class="sponsors-track">
+<div class="sponsor-chip"><i class="fas fa-shield-halved"></i> G&M Deportes</div>
+<div class="sponsor-chip"><i class="fas fa-bolt"></i> PowerFit</div>
+<div class="sponsor-chip"><i class="fas fa-droplet"></i> AquaLife</div>
+<div class="sponsor-chip"><i class="fas fa-leaf"></i> EcoCancha</div>
+<div class="sponsor-chip"><i class="fas fa-shield-halved"></i> G&M Deportes</div>
+<div class="sponsor-chip"><i class="fas fa-bolt"></i> PowerFit</div>
+<div class="sponsor-chip"><i class="fas fa-droplet"></i> AquaLife</div>
+<div class="sponsor-chip"><i class="fas fa-leaf"></i> EcoCancha</div>
+</div>
+</div>
+</div>
+<div class="glass-box p-8 rounded-3xl border border-white/10 text-center space-y-6 animated-border shadow-2xl">
+<h3 class="text-xl font-black text-white uppercase">Únete a nuestra comunidad</h3>
+<p class="text-xs text-gray-400">Síguenos en nuestras redes sociales para ver entrenamientos en vivo, goles y anuncios.</p>
+<div class="flex justify-center gap-4 sm:gap-6">
+<a href="https://instagram.com" target="_blank" class="w-14 h-14 rounded-full bg-[#E1306C]/10 border border-[#E1306C]/30 text-[#E1306C] flex items-center justify-center text-2xl hover:bg-[#E1306C] hover:text-white hover:scale-110 transition-all"><i class="fab fa-instagram"></i></a>
+<a href="https://facebook.com" target="_blank" class="w-14 h-14 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 text-[#1877F2] flex items-center justify-center text-2xl hover:bg-[#1877F2] hover:text-white hover:scale-110 transition-all"><i class="fab fa-facebook-f"></i></a>
+<a href="https://tiktok.com" target="_blank" class="w-14 h-14 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center text-2xl hover:bg-white hover:text-black hover:scale-110 transition-all"><i class="fab fa-tiktok"></i></a>
+<a href="https://youtube.com" target="_blank" class="w-14 h-14 rounded-full bg-[#FF0000]/10 border border-[#FF0000]/30 text-[#FF0000] flex items-center justify-center text-2xl hover:bg-[#FF0000] hover:text-white hover:scale-110 transition-all"><i class="fab fa-youtube"></i></a>
+</div>
+</div>
+</div>
+</section>
+<footer class="relative z-10 bg-black border-t border-white/10 pt-10 pb-28 md:pb-10 px-4 mt-8 text-center">
+<div class="max-w-4xl mx-auto space-y-4">
+<div class="flex items-center justify-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-black border border-white/20 flex items-center justify-center text-white font-black text-xs shadow-lg">ANS</div>
+<span class="font-black text-sm tracking-wider text-white">ACADEMIA NICO SPORT</span>
+</div>
+<p class="text-xs text-gray-500">© 2008 - 2026 Academia Nico Sport & G&M Deportes S.A. Todos los derechos reservados. Formando jugadores, formando personas.</p>
+</div>
+</footer>
+<!-- WHATSAPP -->
+<a href="https://wa.me/50760000000?text=Hola,%20deseo%20inscribir%20a%20mi%20hijo(a)%20en%20la%20Academia%20Nico%20Sport" target="_blank" rel="noopener noreferrer" class="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-[45] bg-[#25D366] hover:bg-[#20ba5a] text-white p-4 rounded-full shadow-[0_0_25px_rgba(37,211,102,0.6)] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group" aria-label="Chatear por WhatsApp">
+<i class="fab fa-whatsapp text-3xl group-hover:rotate-12 transition-transform"></i>
+<span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 text-xs font-black uppercase transition-all duration-500 ease-in-out">Inscríbete Aquí</span>
+</a>
+<!-- DESHACER / REHACER -->
+<div x-show="esAdmin && !loading" class="fixed bottom-24 left-4 md:bottom-6 md:left-6 z-[45] flex flex-col gap-2">
+<button @click="deshacer()" :disabled="historial.length === 0" class="bg-black/90 border border-white/20 rounded-xl px-3 py-2 text-[10px] font-black uppercase text-gray-200 disabled:opacity-30 hover:bg-white/10 transition-all shadow-lg backdrop-blur-md">↩️ Deshacer (<span x-text="historial.length"></span>)</button>
+<button @click="rehacer()" :disabled="pilaRehacer.length === 0" class="bg-black/90 border border-white/20 rounded-xl px-3 py-2 text-[10px] font-black uppercase text-gray-200 disabled:opacity-30 hover:bg-white/10 transition-all shadow-lg backdrop-blur-md">↪️ Rehacer (<span x-text="pilaRehacer.length"></span>)</button>
+</div>
+<!-- ==================== MODAL JUGADOR ==================== -->
+<div x-show="playerModal !== null" x-transition class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto" style="display: none;">
+<div class="glass-box p-6 sm:p-8 rounded-3xl max-w-sm w-full border border-nico-orange/50 relative shadow-2xl space-y-6 text-center my-8" @click.outside="playerModal = null">
+<button @click="playerModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+<div class="relative w-28 h-28 mx-auto rounded-2xl bg-gradient-to-b from-amber-400 via-amber-600 to-amber-900 p-[2px] shadow-2xl">
+<div class="bg-black w-full h-full rounded-[14px] flex items-center justify-center overflow-hidden relative">
+<div class="absolute top-2 left-2 text-xs font-black text-white" x-text="'#' + (playerModal ? playerModal.dorsal : '')"></div>
+<img :src="playerModal ? (playerModal.foto || 'img/jugadores/' + playerModal.catKey + '/' + playerModal.dorsal + '.png') : ''" alt="Jugador" class="h-24 object-contain">
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-nico-orange uppercase tracking-widest block" x-text="playerModal ? playerModal.pos : ''"></span>
+<h3 class="text-2xl font-black text-white uppercase mt-1" x-text="playerModal ? playerModal.name : ''"></h3>
+<span class="text-[11px] text-gray-400">Academia Nico Sport • Plantilla Oficial</span>
+</div>
+<div class="grid grid-cols-3 gap-3 bg-black/80 p-4 rounded-2xl border border-white/10 text-center">
+<div class="space-y-1"><span class="text-[10px] text-gray-400 uppercase font-bold block">Goles</span><span class="text-2xl font-black text-nico-green" x-text="playerModal ? getStats(playerModal).goles : 0"></span></div>
+<div class="space-y-1 border-x border-white/10 px-2"><span class="text-[10px] text-gray-400 uppercase font-bold block">Asistencias</span><span class="text-2xl font-black text-nico-orange" x-text="playerModal ? getStats(playerModal).asistencias : 0"></span></div>
+<div class="space-y-1"><span class="text-[10px] text-gray-400 uppercase font-bold block">MVP</span><span class="text-2xl font-black text-amber-400" x-text="playerModal ? getStats(playerModal).mvp : 0"></span></div>
+</div>
+<template x-if="playerModal && puedeEditarCategoria(playerModal.catKey)">
+<div class="bg-black/60 p-3 rounded-2xl border border-nico-green/30 space-y-2">
+<span class="text-[10px] font-black text-nico-green uppercase tracking-widest block text-center"><i class="fas fa-pen"></i> Editar Estadísticas</span>
+<div class="flex items-center justify-center gap-2 flex-wrap">
+<div class="stat-editor"><button @click="cambiarStat(playerModal,'goles',-1)">−</button><span>⚽<span x-text="getStats(playerModal).goles"></span></span><button @click="cambiarStat(playerModal,'goles',1)">+</button></div>
+<div class="stat-editor"><button @click="cambiarStat(playerModal,'asistencias',-1)">−</button><span>🎯<span x-text="getStats(playerModal).asistencias"></span></span><button @click="cambiarStat(playerModal,'asistencias',1)">+</button></div>
+<div class="stat-editor"><button @click="cambiarStat(playerModal,'mvp',-1)">−</button><span>🏅<span x-text="getStats(playerModal).mvp"></span></span><button @click="cambiarStat(playerModal,'mvp',1)">+</button></div>
+</div>
+</div>
+</template>
+<template x-if="playerModal && currentUser">
+<div class="space-y-2">
+<div x-show="evalResumen(playerModal)" class="bg-black/60 p-4 rounded-2xl border border-nico-green/30 space-y-2">
+<h4 class="text-[10px] font-black text-nico-green uppercase tracking-widest text-center">Evaluación del Jugador</h4>
+<div class="grid grid-cols-5 gap-1 text-center">
+<div><span class="text-[8px] text-gray-500 block">TÉC</span><span class="text-sm font-black text-white" x-text="evalResumen(playerModal).tecnicos || '—'"></span></div>
+<div><span class="text-[8px] text-gray-500 block">TÁC</span><span class="text-sm font-black text-white" x-text="evalResumen(playerModal).tacticos || '—'"></span></div>
+<div><span class="text-[8px] text-gray-500 block">FÍS</span><span class="text-sm font-black text-white" x-text="evalResumen(playerModal).fisicos || '—'"></span></div>
+<div><span class="text-[8px] text-gray-500 block">ACT</span><span class="text-sm font-black text-white" x-text="evalResumen(playerModal).actitudinales || '—'"></span></div>
+<div><span class="text-[8px] text-gray-500 block">GENERAL</span><span class="text-sm font-black text-nico-green" x-text="evalResumen(playerModal).general || '—'"></span></div>
+</div>
+</div>
+<div class="bg-black/60 p-4 rounded-2xl border border-white/10 space-y-2">
+<h4 class="text-[10px] font-black text-amber-400 uppercase tracking-widest text-center">Asistencia</h4>
+<div class="grid grid-cols-3 gap-1 text-center">
+<div><span class="text-[8px] text-gray-500 block">PRESENTES</span><span class="text-sm font-black text-nico-green" x-text="resumenAsistencia(playerModal).presente"></span></div>
+<div><span class="text-[8px] text-gray-500 block">AUSENTES</span><span class="text-sm font-black text-nico-red" x-text="resumenAsistencia(playerModal).ausente"></span></div>
+<div><span class="text-[8px] text-gray-500 block">JUSTIFICADOS</span><span class="text-sm font-black text-amber-400" x-text="resumenAsistencia(playerModal).justificado"></span></div>
+</div>
+</div>
+</div>
+</template>
+<button x-show="playerModal && currentUser" @click="abrirEvalVer(playerModal)" class="w-full bg-amber-400 hover:bg-amber-500 text-black font-black py-3 rounded-xl text-xs uppercase"><i class="fas fa-file-lines"></i> Ver Hoja de Evaluación</button>
+<button x-show="esAdmin || (esEntrenador && playerModal && puedeEditarCategoria(playerModal.catKey))" @click="abrirEvaluacion(playerModal)" class="w-full bg-nico-green hover:bg-nico-greenDark text-white font-black py-3 rounded-xl text-xs uppercase"><i class="fas fa-clipboard-check"></i> Evaluar al Jugador</button>
+<button @click="playerModal = null" class="w-full bg-nico-orange hover:bg-nico-orangeDark text-white font-black py-3 rounded-xl text-xs uppercase">Cerrar Ficha</button>
+</div>
+</div>
+<!-- ==================== MODAL IMAGEN ==================== -->
+<div x-show="imageModal !== null" x-transition class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+<div class="glass-box p-6 sm:p-8 rounded-3xl max-w-lg w-full border border-white/20 relative shadow-2xl space-y-6 text-center" @click.outside="imageModal = null">
+<button @click="imageModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+<div class="w-16 h-16 mx-auto rounded-2xl bg-black border border-nico-orange flex items-center justify-center text-2xl text-nico-orange shadow-lg animate-pulse"><i class="fas fa-camera"></i></div>
+<div>
+<h3 class="text-xl font-black text-white uppercase" x-text="imageModal"></h3>
+<p class="text-xs text-gray-400 mt-1">Fotografía oficial e independiente de la plantilla de la temporada.</p>
+</div>
+<div class="h-48 rounded-2xl bg-gradient-to-tr from-black via-gray-900 to-black border border-white/10 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+<img src="img/escudo.png" alt="Escudo Nico Sport" class="w-16 h-16 object-contain mb-2">
+<span class="text-xs font-mono font-bold text-gray-300 uppercase tracking-widest">Academia Nico Sport - Plantilla Oficial</span>
+</div>
+<button @click="imageModal = null" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase">Entendido</button>
+</div>
+</div>
+<!-- ==================== MODAL STAFF ==================== -->
+<div x-show="staffModal !== null" x-transition class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+<div class="glass-box p-6 sm:p-8 rounded-3xl max-w-md w-full border border-white/20 relative shadow-2xl space-y-6" @click.outside="staffModal = null">
+<button @click="staffModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br flex items-center justify-center text-2xl text-white shadow-md border border-white/10" :class="staffModal ? staffModal.color : ''"><i class="fas" :class="staffModal ? staffModal.fotoIcon : ''"></i></div>
+<div>
+<h3 class="text-xl font-black text-white" x-text="staffModal ? staffModal.nombre : ''"></h3>
+<span class="text-xs font-bold text-gray-300 block" x-text="staffModal ? staffModal.cargo : ''"></span>
+<span class="text-[10px] text-gray-500 font-semibold uppercase" x-text="staffModal ? staffModal.licencia : ''"></span>
+</div>
+</div>
+<div class="space-y-3 text-xs text-gray-300 bg-black/60 p-4 rounded-2xl border border-white/10">
+<p><strong class="text-white">Especialidad:</strong> <span x-text="staffModal ? staffModal.especialidad : ''"></span></p>
+<p><strong class="text-white">Experiencia:</strong> <span x-text="staffModal ? staffModal.exp : ''"></span></p>
+<p class="leading-relaxed text-gray-400"><strong class="text-white">Biografía:</strong> <span x-text="staffModal ? staffModal.bio : ''"></span></p>
+</div>
+<button @click="staffModal = null" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase">Cerrar Ficha</button>
+</div>
+</div>
+<!-- ==================== MODAL LOGIN ==================== -->
+<div x-show="loginModal" x-transition class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+<div class="glass-box p-6 sm:p-8 rounded-3xl max-w-sm w-full border border-nico-orange/50 relative shadow-2xl space-y-6" @click.outside="loginModal = false">
+<button @click="loginModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+<div class="text-center space-y-2">
+<div class="w-12 h-12 mx-auto rounded-2xl bg-black border border-nico-orange flex items-center justify-center text-nico-orange text-xl shadow-lg"><i class="fas fa-user-shield"></i></div>
+<h3 class="text-xl font-black text-white uppercase">Portal Privado</h3>
+<p class="text-xs text-gray-400">Acceso a módulo de administración, entrenadores y familias.</p>
+</div>
+<div class="space-y-3">
+<input type="text" x-model="loginUsuario" placeholder="Usuario" class="w-full bg-black/80 border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-nico-orange">
+<input type="password" x-model="loginPassword" @keydown.enter="intentarLogin()" placeholder="Contraseña" class="w-full bg-black/80 border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-nico-orange">
+<p x-show="loginError" x-text="loginError" class="text-[10px] font-bold text-nico-red bg-nico-red/10 border border-nico-red/30 rounded-lg px-3 py-2"></p>
+</div>
+<button @click="intentarLogin()" class="w-full bg-nico-orange hover:bg-nico-orangeDark text-white font-black py-3 rounded-xl text-xs uppercase">Iniciar Sesión</button>
+<p class="text-[9px] text-gray-500 text-center">Cuentas de prueba: admin / nico2026 · dt.sub6 / dt2026 · familia.aguirre / 1234</p>
+</div>
+</div>
+<!-- ==================== MODAL VIDEO ==================== -->
+<div x-show="videoModal" x-transition class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+<div class="glass-box p-4 rounded-3xl max-w-md w-full border border-white/20 relative shadow-2xl space-y-4" @click.outside="videoModal = false">
+<div class="flex justify-between items-center px-2">
+<span class="text-xs font-black text-white uppercase tracking-wider">Video Highlights • Temporada 2026</span>
+<button @click="videoModal = false" class="text-gray-400 hover:text-white text-lg font-bold">✕</button>
+</div>
+<div class="aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 relative shadow-inner flex items-center justify-center">
+<template x-if="videoModal">
+<video class="w-full h-full object-cover" controls autoplay>
+<source src="video/resumen-temporada.mp4" type="video/mp4">
+Tu navegador no soporta el formato de video.
+</video>
+</template>
+</div>
+</div>
+</div>
+<!-- ==================== MODAL EVALUADOR (ADMIN/DT) ==================== -->
+<div x-show="evalModal" x-transition class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-md overflow-y-auto" style="display: none;">
+<div class="min-h-full flex items-start justify-center p-3 sm:p-6">
+<div class="glass-box p-5 sm:p-8 rounded-3xl w-full max-w-5xl border border-nico-green/50 relative shadow-2xl space-y-5">
+<button @click="evalModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg z-10">✕</button>
+<div class="text-center">
+<span class="text-xs font-black text-nico-green uppercase tracking-widest">Hoja de Evaluación del Jugador</span>
+<h3 class="text-2xl font-black text-white uppercase" x-text="evalModal ? evalModal.name : ''"></h3>
+<span class="text-[11px] text-gray-400" x-text="evalModal ? 'Categoría ' + evalModal.catKey.toUpperCase() + ' • #' + evalModal.dorsal : ''"></span>
+</div>
+<div class="flex items-center justify-center gap-3 bg-black/60 p-3 rounded-2xl border border-white/10 sticky top-0 z-10 backdrop-blur-xl">
+<span class="text-[10px] text-gray-400 font-bold uppercase">Calificación en vivo:</span>
+<span class="text-2xl font-black" :class="evalPromedio >= 3.5 ? 'text-nico-green' : (evalPromedio >= 2.5 ? 'text-amber-400' : 'text-nico-red')" x-text="evalPromedio ? evalPromedio + ' / 5' : '—'"></span>
+</div>
+<div class="grid md:grid-cols-2 gap-4">
+<template x-for="(grupo, gKey) in gruposEval" :key="'ed-' + gKey">
+<div>
+<h4 class="text-xs font-black uppercase mb-2 flex items-center gap-2" :class="grupo[3]"><i class="fas" :class="grupo[2]"></i> <span x-text="grupo[1]"></span></h4>
+<div class="space-y-1.5">
+<template x-for="(item, i) in evalItems[grupo[0]]" :key="'ed-' + gKey + i">
+<div class="flex items-center justify-between bg-black/40 border border-white/5 rounded-lg px-3 py-2">
+<span class="text-[11px] text-gray-300" x-text="item"></span>
+<div class="flex gap-1">
+<template x-for="n in 5" :key="'ed-' + gKey + i + '-' + n">
+<button @click="evalDatos[grupo[0]][i] = n" :class="evalDatos[grupo[0]][i] === n ? 'bg-nico-orange text-white shadow-[0_0_8px_rgba(255,85,0,0.6)]' : 'bg-black/60 text-gray-500 hover:text-white'" class="w-7 h-7 rounded text-[10px] font-black transition-all" x-text="n"></button>
+</template>
+</div>
+</div>
+</template>
+</div>
+</div>
+</template>
+</div>
+<button @click="guardarEvaluacion()" class="w-full bg-nico-orange hover:bg-nico-orangeDark text-white font-black py-3 rounded-xl text-xs uppercase"><i class="fas fa-floppy-disk"></i> Guardar Evaluación</button>
+</div>
+</div>
+</div>
+<!-- ==================== MODAL HOJA DE EVALUACIÓN (SOLO LECTURA) ==================== -->
+<div x-show="evalVerModal !== null" x-transition class="fixed inset-0 z-[70] bg-black/95 backdrop-blur-md overflow-y-auto" style="display: none;">
+<div class="min-h-full flex items-start justify-center p-3 sm:p-6">
+<div class="glass-box p-5 sm:p-8 rounded-3xl w-full max-w-3xl border border-amber-400/50 relative shadow-2xl space-y-5 my-8">
+<button @click="evalVerModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg z-10">✕</button>
+<div class="text-center">
+<span class="text-xs font-black text-amber-400 uppercase tracking-widest"><i class="fas fa-file-lines"></i> Hoja de Evaluación Oficial</span>
+<h3 class="text-2xl font-black text-white uppercase" x-text="evalVerModal ? evalVerModal.name : ''"></h3>
+<span class="text-[11px] text-gray-400" x-text="evalVerModal ? 'Categoría ' + evalVerModal.catKey.toUpperCase() + ' • #' + evalVerModal.dorsal : ''"></span>
+</div>
+<template x-if="evalVerModal && !evalCompleta(evalVerModal)">
+<div class="text-center text-gray-500 italic py-10">
+<i class="fas fa-hourglass-half text-3xl mb-3 block text-gray-600"></i>
+Aún no hay evaluaciones registradas para este jugador.<br>El cuerpo técnico cargará su hoja de evaluación próximamente.
+</div>
+</template>
+<template x-if="evalVerModal && evalCompleta(evalVerModal)">
+<div class="space-y-5">
+<div class="flex items-center justify-center gap-3 bg-black/60 p-3 rounded-2xl border border-white/10">
+<span class="text-[10px] text-gray-400 font-bold uppercase">Calificación General:</span>
+<span class="text-2xl font-black" :class="notaJugador(evalVerModal) >= 3.5 ? 'text-nico-green' : (notaJugador(evalVerModal) >= 2.5 ? 'text-amber-400' : 'text-nico-red')" x-text="notaJugador(evalVerModal) ? notaJugador(evalVerModal).toFixed(1) + ' / 5' : '—'"></span>
+</div>
+<template x-for="(grupo, gKey) in gruposEval" :key="'ver-' + gKey">
+<div class="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-2">
+<h4 class="text-xs font-black uppercase flex items-center gap-2" :class="grupo[3]">
+<i class="fas" :class="grupo[2]"></i> <span x-text="grupo[1]"></span>
+<span class="ml-auto text-white" x-text="(evalResumen(evalVerModal) ? evalResumen(evalVerModal)[grupo[0]] : '—') + ' / 5'"></span>
+</h4>
+<div class="grid sm:grid-cols-2 gap-1.5">
+<template x-for="(item, i) in evalItems[grupo[0]]" :key="'ver-' + gKey + '-' + i">
+<div class="flex items-center justify-between bg-black/50 border border-white/5 rounded-lg px-3 py-1.5">
+<span class="text-[11px] text-gray-300" x-text="item"></span>
+<span class="text-xs font-black"
+:class="(evalCompleta(evalVerModal)[grupo[0]][i] || 0) >= 4 ? 'text-nico-green' : ((evalCompleta(evalVerModal)[grupo[0]][i] || 0) >= 3 ? 'text-amber-400' : ((evalCompleta(evalVerModal)[grupo[0]][i] || 0) >= 1 ? 'text-nico-red' : 'text-gray-600'))"
+x-text="(evalCompleta(evalVerModal)[grupo[0]][i] || 0) || '—'"></span>
+</div>
+</template>
+</div>
+</div>
+</template>
+<p class="text-[10px] text-gray-500 text-center italic">Evaluación registrada por el cuerpo técnico de la Academia Nico Sport.</p>
+</div>
+</template>
+<button @click="evalVerModal = null" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase">Cerrar Hoja de Evaluación</button>
+</div>
+</div>
+</div>
+<script>
+(function () {
+function syncMediaColumnHeight() {
+var left = document.getElementById('leftAnnCol');
+var right = document.getElementById('rightMediaCol');
+if (!left || !right) return;
+if (window.innerWidth >= 1024) { right.style.height = left.offsetHeight + 'px'; } else { right.style.height = ''; }
+}
+window.addEventListener('load', syncMediaColumnHeight);
+window.addEventListener('resize', syncMediaColumnHeight);
+setTimeout(syncMediaColumnHeight, 300);
+setTimeout(syncMediaColumnHeight, 800);
+setTimeout(syncMediaColumnHeight, 1500);
+document.querySelectorAll('#leftAnnCol img').forEach(function (img) {
+if (img.complete) return;
+img.addEventListener('load', syncMediaColumnHeight);
+});
+})();
+</script>
+</body>
+</html>
